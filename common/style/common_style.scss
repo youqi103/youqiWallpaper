@@ -1,0 +1,14 @@
+view,swiper,swiper-item{
+	box-sizing: border-box;
+}
+.pageBg{
+	background:
+	linear-gradient(to bottom,transparent ,white 400rpx),
+	linear-gradient(to right,#aeeeee 20%,#ffebee);
+}
+.loadingLayout{
+	padding:30rpx;
+}
+.safe-area-inset-bottom{
+	padding-bottom: env(safe-area-inset-bottom);
+}

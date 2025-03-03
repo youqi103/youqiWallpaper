@@ -1,0 +1,191 @@
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.preview.data-v-2dad6c07 {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+.preview swiper.data-v-2dad6c07 {
+  width: 100%;
+  height: 100%;
+}
+.preview swiper image.data-v-2dad6c07 {
+  width: 100%;
+  height: 100%;
+}
+.preview .mask > view.data-v-2dad6c07 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: -webkit-fit-content;
+  width: fit-content;
+}
+.preview .mask .goBack.data-v-2dad6c07 {
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 30rpx;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-backdrop-filter: blur(10rpx);
+          backdrop-filter: blur(10rpx);
+  margin-left: 0;
+}
+.preview .mask .count.data-v-2dad6c07 {
+  top: 10vh;
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 40rpx;
+  padding: 8rpx 28rpx;
+  background-color: rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(10rpx);
+          backdrop-filter: blur(10rpx);
+}
+.preview .mask .time.data-v-2dad6c07 {
+  color: #fff;
+  top: calc(10vh + 80rpx);
+  font-size: 140rpx;
+  font-weight: 100;
+  line-height: 1em;
+  text-shadow: 0 4rpx rgba(0, 0, 0, 0.3);
+}
+.preview .mask .date.data-v-2dad6c07 {
+  color: #fff;
+  font-size: 34rpx;
+  top: calc(10vh + 230rpx);
+  text-shadow: 0 2rpx rgba(0, 0, 0, 0.3);
+}
+.preview .mask .footer.data-v-2dad6c07 {
+  border-radius: 120rpx;
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 65vw;
+  height: 120rpx;
+  bottom: 10vh;
+  -webkit-backdrop-filter: blur(20rpx);
+          backdrop-filter: blur(20rpx);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 2rpx 0 rgba(0, 0, 0, 0.1);
+}
+.preview .mask .footer .box.data-v-2dad6c07 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 0 16rpx;
+}
+.preview .mask .footer .box .text.data-v-2dad6c07 {
+  font-size: 24rpx;
+  color: #676767;
+}
+.preview .infopopup.data-v-2dad6c07 {
+  padding: 30rpx;
+  border-radius: 30rpx 30rpx 0 0;
+  overflow: hidden;
+  width: 100%;
+  background-color: #fff;
+}
+.preview .infopopup scroll-view.data-v-2dad6c07 {
+  max-height: 60vh;
+}
+.preview .infopopup scroll-view .content .row.data-v-2dad6c07 {
+  display: flex;
+  padding: 16rpx 0;
+  font-size: 32rpx;
+  line-height: 1.7em;
+  align-items: center;
+}
+.preview .infopopup scroll-view .content .row .label.data-v-2dad6c07 {
+  color: #ccc;
+  width: 140rpx;
+  text-align: right;
+  font-size: 30rpx;
+}
+.preview .infopopup scroll-view .content .row .value.data-v-2dad6c07 {
+  flex: 1;
+  width: 0;
+}
+.preview .infopopup scroll-view .content .row .class.data-v-2dad6c07 {
+  color: #28b389;
+}
+.preview .infopopup scroll-view .content .row .rate-box.data-v-2dad6c07 {
+  display: flex;
+  align-items: center;
+}
+.preview .infopopup scroll-view .content .row .rate-box .score.data-v-2dad6c07 {
+  font-size: 26rpx;
+  color: #ccc;
+  padding-left: 20rpx;
+}
+.preview .infopopup scroll-view .content .row .tabs.data-v-2dad6c07 {
+  display: flex;
+  flex-wrap: wrap;
+}
+.preview .infopopup scroll-view .content .row .tabs .tab.data-v-2dad6c07 {
+  border: 1px solid #28b389;
+  color: #28b389;
+  font-size: 22rpx;
+  padding: 10rpx 30rpx;
+  border-radius: 40rpx;
+  line-height: 1em;
+  margin: 0 10rpx 10rpx 0;
+}
+.preview .infopopup scroll-view .content .copyright.data-v-2dad6c07 {
+  font-size: 28rpx;
+  padding: 20rpx;
+  background-color: #f6f6f6;
+  color: #666;
+  border-radius: 10rpx;
+  margin: 20rpx 0;
+  line-height: 1.5em;
+}
+.preview .popHeader.data-v-2dad6c07 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.preview .popHeader .close.data-v-2dad6c07 {
+  padding: 10rpx;
+}
+.preview .scorePopup.data-v-2dad6c07 {
+  background-color: #fff;
+  padding: 30rpx;
+  width: 70vw;
+  border-radius: 30rpx;
+}
+.preview .scorePopup .content.data-v-2dad6c07 {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding: 30rpx;
+}
+.preview .scorePopup .content .text.data-v-2dad6c07 {
+  color: #ffca3e;
+  padding-left: 10rpx;
+  width: 80rpx;
+  line-height: 1em;
+  text-align: right;
+}
+.preview .scorePopup .footer.data-v-2dad6c07 {
+  padding: 10rpx 0;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}

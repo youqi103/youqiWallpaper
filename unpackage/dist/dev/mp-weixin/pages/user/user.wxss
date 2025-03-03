@@ -1,0 +1,88 @@
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.userLayout.data-v-0f7520f0 {
+  height: 90vh;
+}
+.userLayout .userInfor.data-v-0f7520f0 {
+  padding: 50rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.userLayout .userInfor .avatar.data-v-0f7520f0 {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.userLayout .userInfor .avatar image.data-v-0f7520f0 {
+  width: 100%;
+  height: 100%;
+}
+.userLayout .userInfor .Ip.data-v-0f7520f0 {
+  font-size: 44rpx;
+  color: #333;
+  padding: 20rpx 0 5rpx;
+}
+.userLayout .userInfor .address.data-v-0f7520f0 {
+  font-size: 28rpx;
+  color: #888;
+}
+.userLayout .section.data-v-0f7520f0 {
+  width: 690rpx;
+  margin: 50rpx auto;
+  border: 1pxS solid #eee;
+  border-radius: 10rpx;
+  box-shadow: 0 0 30rpx rgba(0, 0, 0, 0.05);
+}
+.userLayout .section .list .row.data-v-0f7520f0 {
+  display: flex;
+  background-color: #fff;
+  justify-content: space-between;
+  padding: 0 30rpx;
+  height: 100rpx;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+.userLayout .section .list .row.data-v-0f7520f0:last-child {
+  border-bottom: none;
+}
+.userLayout .section .list .row .left.data-v-0f7520f0 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.userLayout .section .list .row .left .text.data-v-0f7520f0 {
+  color: #333;
+  font-size: 25rpx;
+}
+.userLayout .section .list .row .left.data-v-0f7520f0  .uni-icons {
+  color: #28b389 !important;
+}
+.userLayout .section .list .row .right.data-v-0f7520f0 {
+  display: flex;
+  align-items: center;
+}
+.userLayout .section .list .row .right .text.data-v-0f7520f0 {
+  font-size: 28rpx;
+  color: #aaa;
+  margin-right: 10rpx;
+}
+.userLayout .section .list .row button.data-v-0f7520f0 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100rpx;
+  opacity: 0;
+}
