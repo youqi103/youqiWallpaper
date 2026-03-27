@@ -24,9 +24,16 @@ function apiGetClassList(data = {}) {
     data
   });
 }
+function apiSearchWall(data = {}) {
+  return utils_request.request({
+    url: "/searchWall",
+    data
+  });
+}
 exports.apiGetBanner = apiGetBanner;
 exports.apiGetClassList = apiGetClassList;
 exports.apiGetClassify = apiGetClassify;
 exports.apiGetNotice = apiGetNotice;
 exports.apiGetRedomPage = apiGetRedomPage;
+exports.apiSearchWall = apiSearchWall;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/api/apis.js.map

@@ -6,11 +6,12 @@
     "pages/classList/classList",
     "pages/preview/preview",
     "pages/notice/notice",
-    "pages/notice/detial/detial"
+    "pages/notice/detial/detial",
+    "pages/search/search"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "忧戚壁纸",
+    "navigationBarTitleText": "忧戚的壁纸",
     "navigationBarBackgroundColor": "#Fff",
     "backgroundColor": "#F8F8F8"
   },

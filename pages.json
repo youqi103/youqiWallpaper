@@ -13,6 +13,7 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "我的"
+				
 			}
 		},
 		{
@@ -44,6 +45,7 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "公告"
+				
 			}
 		},
 		{
@@ -51,6 +53,15 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : ""
+				
+			}
+		},
+		{
+			"path" : "pages/search/search",
+			"style" : 
+			{
+				"navigationBarTitleText" : "搜索"
+			
 			}
 		}
 	],
@@ -80,7 +91,7 @@
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "忧戚壁纸",
+		"navigationBarTitleText": "忧戚的壁纸",
 		"navigationBarBackgroundColor": "#Fff",
 		"backgroundColor": "#F8F8F8"
 	},

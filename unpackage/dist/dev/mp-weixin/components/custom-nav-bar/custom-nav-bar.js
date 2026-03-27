@@ -18,6 +18,11 @@ const _sfc_main = {
     }
   },
   setup(__props) {
+    const goSearch = () => {
+      common_vendor.index.navigateTo({
+        url: "/pages/search/search"
+      });
+    };
     return (_ctx, _cache) => {
       return {
         a: common_vendor.unref(utils_system.getStatusBarHeight)() + "px",
@@ -26,8 +31,9 @@ const _sfc_main = {
           type: "search",
           size: "18"
         }),
-        d: common_vendor.unref(utils_system.getTitleBarHeight)() + "px",
-        e: common_vendor.unref(utils_system.getNavBarHeight)() + "px"
+        d: common_vendor.o(goSearch, "e2"),
+        e: common_vendor.unref(utils_system.getTitleBarHeight)() + "px",
+        f: common_vendor.unref(utils_system.getNavBarHeight)() + "px"
       };
     };
   }
