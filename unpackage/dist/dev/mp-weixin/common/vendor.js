@@ -463,12 +463,16 @@ const ON_ERROR = "onError";
 const ON_THEME_CHANGE = "onThemeChange";
 const ON_PAGE_NOT_FOUND = "onPageNotFound";
 const ON_UNHANDLE_REJECTION = "onUnhandledRejection";
+const ON_LAST_PAGE_BACK_PRESS = "onLastPageBackPress";
 const ON_EXIT = "onExit";
 const ON_LOAD = "onLoad";
 const ON_READY = "onReady";
 const ON_UNLOAD = "onUnload";
 const ON_INIT = "onInit";
 const ON_SAVE_EXIT_STATE = "onSaveExitState";
+const ON_UPLOAD_DOUYIN_VIDEO = "onUploadDouyinVideo";
+const ON_LIVE_MOUNT = "onLiveMount";
+const ON_TITLE_CLICK = "onTitleClick";
 const ON_RESIZE = "onResize";
 const ON_BACK_PRESS = "onBackPress";
 const ON_PAGE_SCROLL = "onPageScroll";
@@ -477,6 +481,7 @@ const ON_REACH_BOTTOM = "onReachBottom";
 const ON_PULL_DOWN_REFRESH = "onPullDownRefresh";
 const ON_SHARE_TIMELINE = "onShareTimeline";
 const ON_SHARE_CHAT = "onShareChat";
+const ON_COPY_URL = "onCopyUrl";
 const ON_ADD_TO_FAVORITES = "onAddToFavorites";
 const ON_SHARE_APP_MESSAGE = "onShareAppMessage";
 const ON_NAVIGATION_BAR_BUTTON_TAP = "onNavigationBarButtonTap";
@@ -488,6 +493,10 @@ const VIRTUAL_HOST_STYLE = "virtualHostStyle";
 const VIRTUAL_HOST_CLASS = "virtualHostClass";
 const VIRTUAL_HOST_HIDDEN = "virtualHostHidden";
 const VIRTUAL_HOST_ID = "virtualHostId";
+const customizeRE = /:/g;
+function customizeEvent(str) {
+  return camelize(str.replace(customizeRE, "-"));
+}
 function hasLeadingSlash(str) {
   return str.indexOf("/") === 0;
 }
@@ -526,20 +535,6 @@ function getValueByDataPath(obj, path) {
   }
   return getValueByDataPath(obj[key], parts.slice(1).join("."));
 }
-function sortObject(obj) {
-  let sortObj = {};
-  if (isPlainObject(obj)) {
-    Object.keys(obj).sort().forEach((key) => {
-      const _key = key;
-      sortObj[_key] = obj[_key];
-    });
-  }
-  return !Object.keys(sortObj) ? obj : sortObj;
-}
-const customizeRE = /:/g;
-function customizeEvent(str) {
-  return camelize(str.replace(customizeRE, "-"));
-}
 const encode = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode) {
   const res = obj ? Object.keys(obj).map((key) => {
@@ -559,6 +554,7 @@ const PAGE_HOOKS = [
   ON_SHOW,
   ON_HIDE,
   ON_UNLOAD,
+  ON_RESIZE,
   ON_BACK_PRESS,
   ON_PAGE_SCROLL,
   ON_TAB_ITEM_TAP,
@@ -567,6 +563,10 @@ const PAGE_HOOKS = [
   ON_SHARE_TIMELINE,
   ON_SHARE_APP_MESSAGE,
   ON_SHARE_CHAT,
+  ON_COPY_URL,
+  ON_UPLOAD_DOUYIN_VIDEO,
+  ON_LIVE_MOUNT,
+  ON_TITLE_CLICK,
   ON_ADD_TO_FAVORITES,
   ON_SAVE_EXIT_STATE,
   ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -601,18 +601,28 @@ const UniLifecycleHooks = [
   ON_ADD_TO_FAVORITES,
   ON_SHARE_APP_MESSAGE,
   ON_SHARE_CHAT,
+  ON_COPY_URL,
+  ON_UPLOAD_DOUYIN_VIDEO,
+  ON_LIVE_MOUNT,
+  ON_TITLE_CLICK,
   ON_SAVE_EXIT_STATE,
   ON_NAVIGATION_BAR_BUTTON_TAP,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED,
   ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
-  ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED
+  ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
+  ON_LAST_PAGE_BACK_PRESS
 ];
 const MINI_PROGRAM_PAGE_RUNTIME_HOOKS = /* @__PURE__ */ (() => {
   return {
     onPageScroll: 1,
     onShareAppMessage: 1 << 1,
-    onShareTimeline: 1 << 2
+    onShareTimeline: 1 << 2,
+    onShareChat: 1 << 3,
+    onCopyUrl: 1 << 4,
+    onUploadDouyinVideo: 1 << 5,
+    onLiveMount: 1 << 6,
+    onTitleClick: 1 << 7
   };
 })();
 function isUniLifecycleHook(name, value, checkType = true) {
@@ -2886,21 +2896,21 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
     );
   }
 }
-const createHook$1 = (lifecycle) => (hook, target = currentInstance) => (
+const createHook = (lifecycle) => (hook, target = currentInstance) => (
   // post-create lifecycle registrations are noops during SSR (except for serverPrefetch)
   (!isInSSRComponentSetup || lifecycle === "sp") && injectHook(lifecycle, (...args) => hook(...args), target)
 );
-const onBeforeMount = createHook$1("bm");
-const onMounted = createHook$1("m");
-const onBeforeUpdate = createHook$1("bu");
-const onUpdated = createHook$1("u");
-const onBeforeUnmount = createHook$1("bum");
-const onUnmounted = createHook$1("um");
-const onServerPrefetch = createHook$1("sp");
-const onRenderTriggered = createHook$1(
+const onBeforeMount = createHook("bm");
+const onMounted = createHook("m");
+const onBeforeUpdate = createHook("bu");
+const onUpdated = createHook("u");
+const onBeforeUnmount = createHook("bum");
+const onUnmounted = createHook("um");
+const onServerPrefetch = createHook("sp");
+const onRenderTriggered = createHook(
   "rtg"
 );
-const onRenderTracked = createHook$1(
+const onRenderTracked = createHook(
   "rtc"
 );
 function onErrorCaptured(hook, target = currentInstance) {
@@ -2913,11 +2923,15 @@ const getPublicInstance = (i) => {
     return getExposeProxy(i) || i.proxy;
   return getPublicInstance(i.parent);
 };
+function getComponentInternalInstance(i) {
+  return i;
+}
 const publicPropertiesMap = (
   // Move PURE marker to new line to workaround compiler discarding it
   // due to type annotation
   /* @__PURE__ */ extend(/* @__PURE__ */ Object.create(null), {
-    $: (i) => i,
+    // fixed by xxxxxx
+    $: getComponentInternalInstance,
     // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
     // $el: i => i.vnode.el,
     $el: (i) => i.__$el || (i.__$el = {}),
@@ -2997,6 +3011,8 @@ const PublicInstanceProxyHandlers = {
     } else if (ctx !== EMPTY_OBJ && hasOwn$1(ctx, key)) {
       accessCache[key] = 4;
       return ctx[key];
+    } else if (instance.exposed && hasOwn$1(instance.exposed, key)) {
+      return instance.exposed[key];
     } else if (
       // global properties
       globalProperties = appContext.config.globalProperties, hasOwn$1(globalProperties, key)
@@ -3616,7 +3632,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
         if (options) {
           if (hasOwn$1(attrs, key)) {
             if (value !== attrs[key]) {
-              attrs[key] = value;
+              attrs[key] = normalizeInheritAttrsValue(instance, key, value);
               hasAttrsChanged = true;
             }
           } else {
@@ -3632,7 +3648,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
           }
         } else {
           if (value !== attrs[key]) {
-            attrs[key] = value;
+            attrs[key] = normalizeInheritAttrsValue(instance, key, value);
             hasAttrsChanged = true;
           }
         }
@@ -3695,13 +3711,15 @@ function setFullProps(instance, rawProps, props, attrs) {
       let camelKey;
       if (options && hasOwn$1(options, camelKey = camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
-          props[camelKey] = value;
+          {
+            props[camelKey] = value;
+          }
         } else {
           (rawCastValues || (rawCastValues = {}))[camelKey] = value;
         }
       } else if (!isEmitListener(instance.emitsOptions, key)) {
         if (!(key in attrs) || value !== attrs[key]) {
-          attrs[key] = value;
+          attrs[key] = normalizeInheritAttrsValue(instance, key, value);
           hasAttrsChanged = true;
         }
       }
@@ -3724,7 +3742,21 @@ function setFullProps(instance, rawProps, props, attrs) {
   }
   return hasAttrsChanged;
 }
+function normalizeInheritAttrsValue(instance, key, value) {
+  return value;
+}
 function resolvePropValue$1(options, props, key, value, instance, isAbsent) {
+  const result = _resolvePropValue(
+    options,
+    props,
+    key,
+    value,
+    instance,
+    isAbsent
+  );
+  return result;
+}
+function _resolvePropValue(options, props, key, value, instance, isAbsent) {
   const opt = options[key];
   if (opt != null) {
     const hasDefault = hasOwn$1(opt, "default");
@@ -4110,7 +4142,8 @@ function createComponentInstance(vnode, parent, suspense) {
     $uniElements: /* @__PURE__ */ new Map(),
     $templateUniElementRefs: [],
     $templateUniElementStyles: {},
-    $eS: {}
+    $eS: {},
+    $eA: {}
   };
   {
     instance.ctx = createDevRenderContext(instance);
@@ -4608,6 +4641,7 @@ function patch(instance, data, oldData) {
   }
   data = deepCopy(data);
   data.$eS = instance.$eS || {};
+  data.$eA = instance.$eA || {};
   const ctx = instance.ctx;
   const mpType = ctx.mpType;
   if (mpType === "page" || mpType === "component") {
@@ -4658,16 +4692,15 @@ function setRef$1(instance, isUnmount = false) {
     $templateUniElementRefs,
     ctx: { $scope, $mpPlatform }
   } = instance;
-  if ($mpPlatform === "mp-alipay") {
-    return;
-  }
   if (!$scope || !$templateRefs && !$templateUniElementRefs) {
     return;
   }
   if (isUnmount) {
-    $templateRefs && $templateRefs.forEach(
-      (templateRef) => setTemplateRef(templateRef, null, setupState)
-    );
+    if ($mpPlatform !== "mp-alipay") {
+      $templateRefs && $templateRefs.forEach(
+        (templateRef) => setTemplateRef(templateRef, null, setupState)
+      );
+    }
     $templateUniElementRefs && $templateUniElementRefs.forEach(
       (templateRef) => setTemplateRef(templateRef, null, setupState)
     );
@@ -4704,6 +4737,13 @@ function setRef$1(instance, isUnmount = false) {
       }
     }
   };
+  if ($mpPlatform !== "mp-alipay") {
+    if ($scope._$setRef) {
+      $scope._$setRef(doSet);
+    } else {
+      nextTick(instance, doSet);
+    }
+  }
   if ($templateUniElementRefs && $templateUniElementRefs.length) {
     nextTick(instance, () => {
       $templateUniElementRefs.forEach((templateRef) => {
@@ -4716,11 +4756,6 @@ function setRef$1(instance, isUnmount = false) {
         }
       });
     });
-  }
-  if ($scope._$setRef) {
-    $scope._$setRef(doSet);
-  } else {
-    nextTick(instance, doSet);
   }
 }
 function toSkip(value) {
@@ -4786,6 +4821,7 @@ function warnRef(ref2) {
 const queuePostRenderEffect = queuePostFlushCb;
 function mountComponent(initialVNode, options) {
   const instance = initialVNode.component = createComponentInstance(initialVNode, options.parentComponent, null);
+  instance.renderer = options.mpType ? options.mpType : "component";
   {
     instance.ctx.$onApplyOptions = onApplyOptions;
     instance.ctx.$children = [];
@@ -4828,6 +4864,18 @@ const getFunctionalFallthrough = (attrs) => {
   }
   return res;
 };
+function clearTemplateRefs(templateRefs) {
+  if (!templateRefs) {
+    return [];
+  }
+  return templateRefs.filter((templateRef) => {
+    const v = templateRef.v;
+    if (v && typeof v === "object" && ["UNI-LOADING-ELEMENT", "UNI-CLOUD-DB-ELEMENT"].includes(v.nodeName)) {
+      return true;
+    }
+    return false;
+  });
+}
 function renderComponentRoot(instance) {
   const {
     type: Component2,
@@ -4855,8 +4903,12 @@ function renderComponentRoot(instance) {
     inheritAttrs
   } = instance;
   instance.$uniElementIds = /* @__PURE__ */ new Map();
-  instance.$templateRefs = [];
-  instance.$templateUniElementRefs = [];
+  instance.$templateRefs = clearTemplateRefs(
+    instance.$templateRefs || []
+  );
+  instance.$templateUniElementRefs = clearTemplateRefs(
+    instance.$templateUniElementRefs || []
+  );
   instance.$templateUniElementStyles = {};
   instance.$ei = 0;
   pruneComponentPropsCache2(uid2);
@@ -5124,7 +5176,8 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks$1(options, instance, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
@@ -5466,6 +5519,16 @@ function createApp$1(rootComponent, rootProps = null) {
   return createVueApp(rootComponent, rootProps).use(plugin);
 }
 const createSSRApp = createApp$1;
+function getLocaleLanguage$1() {
+  var _a;
+  let localeLanguage = "";
+  {
+    const appBaseInfo = ((_a = wx.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
+    const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
+    localeLanguage = normalizeLocale(language) || LOCALE_EN;
+  }
+  return localeLanguage;
+}
 function validateProtocolFail(name, msg) {
   console.warn(`${name}: ${msg}`);
 }
@@ -5770,10 +5833,10 @@ function handlePromise(promise) {
 function promisify$1(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve2, reject) => {
-      invokeApi(name, fn, extend(args, { success: resolve2, fail: reject }), rest);
+      invokeApi(name, fn, extend({}, args, { success: resolve2, fail: reject }), rest);
     })));
   };
 }
@@ -5871,9 +5934,15 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-  const { windowWidth, pixelRatio, platform } = Object.assign({}, wx.getWindowInfo(), {
-    platform: wx.getDeviceInfo().platform
-  });
+  var _a, _b;
+  let windowWidth, pixelRatio, platform;
+  {
+    const windowInfo = ((_a = wx.getWindowInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
+    const deviceInfo = ((_b = wx.getDeviceInfo) === null || _b === void 0 ? void 0 : _b.call(wx)) || wx.getSystemInfoSync();
+    windowWidth = windowInfo.windowWidth;
+    pixelRatio = windowInfo.pixelRatio;
+    platform = deviceInfo.platform;
+  }
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
   isIOS = platform === "ios";
@@ -6035,7 +6104,9 @@ const $once = defineSyncApi(API_ONCE, (name, callback) => {
 const $off = defineSyncApi(API_OFF, (name, callback) => {
   if (!isArray(name))
     name = name ? [name] : [];
-  name.forEach((n2) => eventBus.off(n2, callback));
+  name.forEach((n2) => {
+    eventBus.off(n2, callback);
+  });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
   eventBus.emit(name, ...args);
@@ -6162,7 +6233,7 @@ function promisify(name, api) {
   }
   return function promiseApi(options = {}, ...rest) {
     if (isFunction(options.success) || isFunction(options.fail) || isFunction(options.complete)) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, rest));
+      return wrapperReturnValue(name, invokeApi(name, api, extend({}, options), rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve2, reject) => {
       invokeApi(name, api, extend({}, options, {
@@ -6227,6 +6298,9 @@ function initWrapper(protocols2) {
   }
   return function wrapper(methodName, method) {
     const hasProtocol = hasOwn$1(protocols2, methodName);
+    if (!hasProtocol && typeof wx[methodName] !== "function") {
+      return method;
+    }
     const needWrapper = hasProtocol || isFunction(protocols2.returnValue) || isContextApi(methodName) || isTaskApi(methodName);
     const hasMethod = hasProtocol || isFunction(method);
     if (!hasProtocol && !method) {
@@ -6266,7 +6340,7 @@ const getLocale = () => {
   if (app && app.$vm) {
     return app.$vm.$locale;
   }
-  return normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN;
+  return getLocaleLanguage$1();
 };
 const setLocale = (locale) => {
   const app = isFunction(getApp) && getApp();
@@ -6323,11 +6397,29 @@ function getOSInfo(system, platform) {
     osName = platform;
     osVersion = system;
   } else {
-    osName = system.split(" ")[0] || "";
+    osName = system.split(" ")[0] || platform;
     osVersion = system.split(" ")[1] || "";
   }
+  osName = osName.toLowerCase();
+  switch (osName) {
+    case "harmony":
+    case "ohos":
+    case "openharmony":
+      osName = "harmonyos";
+      break;
+    case "iphone os":
+      osName = "ios";
+      break;
+    case "mac":
+    case "darwin":
+      osName = "macos";
+      break;
+    case "windows_nt":
+      osName = "windows";
+      break;
+  }
   return {
-    osName: osName.toLocaleLowerCase(),
+    osName,
     osVersion
   };
 }
@@ -6348,9 +6440,9 @@ function populateParameters(fromRes, toRes) {
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "4.45",
-    uniCompilerVersion: "4.45",
-    uniRuntimeVersion: "4.45",
+    uniCompileVersion: "5.05",
+    uniCompilerVersion: "5.05",
+    uniRuntimeVersion: "5.05",
     uniPlatform: "mp-weixin",
     deviceBrand,
     deviceModel: model,
@@ -6387,7 +6479,7 @@ function getGetDeviceType(fromRes, model) {
       mac: "pc"
     };
     const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
-    const _model = model.toLocaleLowerCase();
+    const _model = model.toLowerCase();
     for (let index2 = 0; index2 < deviceTypeMapsKeys.length; index2++) {
       const _m = deviceTypeMapsKeys[index2];
       if (_model.indexOf(_m) !== -1) {
@@ -6401,7 +6493,7 @@ function getGetDeviceType(fromRes, model) {
 function getDeviceBrand(brand) {
   let deviceBrand = brand;
   if (deviceBrand) {
-    deviceBrand = deviceBrand.toLocaleLowerCase();
+    deviceBrand = deviceBrand.toLowerCase();
   }
   return deviceBrand;
 }
@@ -6472,13 +6564,13 @@ const getDeviceInfo = {
     let deviceBrand = getDeviceBrand(brand);
     useDeviceId()(fromRes, toRes);
     const { osName, osVersion } = getOSInfo(system, platform);
-    toRes = sortObject(extend(toRes, {
+    toRes = extend(toRes, {
       deviceType,
       deviceBrand,
       deviceModel: model,
       osName,
       osVersion
-    }));
+    });
   }
 };
 const getAppBaseInfo = {
@@ -6487,21 +6579,21 @@ const getAppBaseInfo = {
     let _hostName = getHostName(fromRes);
     let hostLanguage = (language || "").replace(/_/g, "-");
     const parameters = {
-      hostVersion: version2,
-      hostLanguage,
-      hostName: _hostName,
-      hostSDKVersion: SDKVersion,
-      hostTheme: theme,
       appId: "__UNI__50EDD01",
       appName: "wallpaper",
       appVersion: "1.0.0",
       appVersionCode: "100",
       appLanguage: getAppLanguage(hostLanguage),
+      hostVersion: version2,
+      hostLanguage,
+      hostName: _hostName,
+      hostSDKVersion: SDKVersion,
+      hostTheme: theme,
       isUniAppX: false,
       uniPlatform: "mp-weixin",
-      uniCompileVersion: "4.45",
-      uniCompilerVersion: "4.45",
-      uniRuntimeVersion: "4.45"
+      uniCompileVersion: "5.05",
+      uniCompilerVersion: "5.05",
+      uniRuntimeVersion: "5.05"
     };
     extend(toRes, parameters);
   }
@@ -6509,10 +6601,10 @@ const getAppBaseInfo = {
 const getWindowInfo = {
   returnValue: (fromRes, toRes) => {
     addSafeAreaInsets(fromRes, toRes);
-    toRes = sortObject(extend(toRes, {
+    toRes = extend(toRes, {
       windowTop: 0,
       windowBottom: 0
-    }));
+    });
   }
 };
 const getAppAuthorizeSetting = {
@@ -6681,11 +6773,23 @@ function createSelectorQuery() {
   const query = wx$2.createSelectorQuery();
   const oldIn = query.in;
   query.in = function newIn(component) {
+    if (component.$scope) {
+      return oldIn.call(this, component.$scope);
+    }
     return oldIn.call(this, initComponentMocks(component));
   };
   return query;
 }
 const wx$2 = initWx();
+if (!wx$2.getAppBaseInfo || !wx$2.getAppBaseInfo()) {
+  wx$2.getAppBaseInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.getWindowInfo || !wx$2.getWindowInfo()) {
+  wx$2.getWindowInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.getDeviceInfo || !wx$2.getDeviceInfo()) {
+  wx$2.getDeviceInfo = wx$2.getSystemInfoSync;
+}
 let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();
 if (!baseInfo) {
   baseInfo = wx$2.getSystemInfoSync();
@@ -6727,84 +6831,178 @@ var protocols = /* @__PURE__ */ Object.freeze({
 });
 const wx$1 = initWx();
 var index = initUni(shims, protocols, wx$1);
+function currentPageCaptureScreenshot(fullPage, callback) {
+  var _a;
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  (_a = currentPage.vm) === null || _a === void 0 ? void 0 : _a.$viewToTempFilePath({
+    wholeContent: fullPage,
+    overwrite: true,
+    success: (res) => {
+      const fileManager = index.getFileSystemManager();
+      fileManager.readFile({
+        encoding: "base64",
+        filePath: res.tempFilePath,
+        success(readFileRes) {
+          callback(readFileRes.data, "");
+        },
+        fail(err) {
+          callback("", `captureScreenshot fail: ${JSON.stringify(err)}`);
+        }
+      });
+    },
+    fail: (err) => {
+      callback("", `captureScreenshot fail: ${JSON.stringify(err)}`);
+    }
+  });
+}
+function initRuntimeSocket(hosts, port, id) {
+  if (hosts == "" || port == "" || id == "")
+    return Promise.resolve(null);
+  return hosts.split(",").reduce((promise, host2) => {
+    return promise.then((socket) => {
+      if (socket != null)
+        return Promise.resolve(socket);
+      return tryConnectSocket(host2, port, id);
+    });
+  }, Promise.resolve(null));
+}
+const SOCKET_TIMEOUT = 500;
+function tryConnectSocket(host2, port, id) {
+  return new Promise((resolve2, reject) => {
+    const socket = index.connectSocket({
+      url: `ws://${host2}:${port}/${id}`,
+      multiple: true,
+      // 支付宝小程序 是否开启多实例
+      fail() {
+        resolve2(null);
+      }
+    });
+    const timer = setTimeout(() => {
+      socket.close({
+        code: 1006,
+        reason: "connect timeout"
+      });
+      resolve2(null);
+    }, SOCKET_TIMEOUT);
+    socket.onOpen((e2) => {
+      clearTimeout(timer);
+      resolve2(socket);
+    });
+    socket.onClose((e2) => {
+      clearTimeout(timer);
+      resolve2(null);
+    });
+    socket.onError((e2) => {
+      clearTimeout(timer);
+      resolve2(null);
+    });
+    socket.onMessage((result) => {
+      const message = JSON.parse(result.data);
+      if (message["type"] == "screencap") {
+        const id2 = message["id"];
+        currentPageCaptureScreenshot(message.fullPage, (base64, error) => {
+          socket.send({
+            data: JSON.stringify({
+              id: id2,
+              base64,
+              error
+            })
+          });
+        });
+      }
+      resolve2(null);
+    });
+  });
+}
 const CONSOLE_TYPES = ["log", "warn", "error", "info", "debug"];
-let sendConsole = null;
-const messageQueue = [];
-function sendConsoleMessages(messages) {
-  if (sendConsole == null) {
-    messageQueue.push(...messages);
-    return;
-  }
-  sendConsole(JSON.stringify({
-    type: "console",
-    data: messages
-  }));
-}
-function setSendConsole(value) {
-  sendConsole = value;
-  if (value != null && messageQueue.length > 0) {
-    const messages = messageQueue.slice();
-    messageQueue.length = 0;
-    sendConsoleMessages(messages);
-  }
-}
 const originalConsole = /* @__PURE__ */ CONSOLE_TYPES.reduce((methods, type) => {
   methods[type] = console[type].bind(console);
   return methods;
 }, {});
-const atFileRegex = /^at\s+[\w/./-]+:\d+$/;
-function rewriteConsole() {
-  function wrapConsole(type) {
-    return function(...args) {
-      const originalArgs = [...args];
-      if (originalArgs.length) {
-        const maybeAtFile = originalArgs[originalArgs.length - 1];
-        if (typeof maybeAtFile === "string" && atFileRegex.test(maybeAtFile)) {
-          originalArgs.pop();
-        }
-      }
-      {
-        originalConsole[type](...originalArgs);
-      }
-      sendConsoleMessages([formatMessage(type, args)]);
-    };
-  }
-  if (isConsoleWritable()) {
-    CONSOLE_TYPES.forEach((type) => {
-      console[type] = wrapConsole(type);
+let sendError = null;
+const errorQueue = /* @__PURE__ */ new Set();
+const errorExtra = {};
+function sendErrorMessages(errors) {
+  if (sendError == null) {
+    errors.forEach((error) => {
+      errorQueue.add(error);
     });
-    return function restoreConsole() {
-      CONSOLE_TYPES.forEach((type) => {
-        console[type] = originalConsole[type];
-      });
-    };
-  } else {
-    const oldLog = index.__f__;
-    if (oldLog) {
-      index.__f__ = function(...args) {
-        const [type, filename, ...rest] = args;
-        oldLog(type, "", ...rest);
-        sendConsoleMessages([formatMessage(type, [...rest, filename])]);
-      };
-      return function restoreConsole() {
-        index.__f__ = oldLog;
-      };
+    return;
+  }
+  const data = errors.map((err) => {
+    if (typeof err === "string") {
+      return err;
+    }
+    const isPromiseRejection = err && "promise" in err && "reason" in err;
+    const prefix = isPromiseRejection ? "UnhandledPromiseRejection: " : "";
+    if (isPromiseRejection) {
+      err = err.reason;
+    }
+    if (err instanceof Error && err.stack) {
+      if (err.message && !err.stack.includes(err.message)) {
+        return `${prefix}${err.message}
+${err.stack}`;
+      }
+      return `${prefix}${err.stack}`;
+    }
+    if (typeof err === "object" && err !== null) {
+      try {
+        return prefix + JSON.stringify(err);
+      } catch (err2) {
+        return prefix + String(err2);
+      }
+    }
+    return prefix + String(err);
+  }).filter(Boolean);
+  if (data.length > 0) {
+    sendError(JSON.stringify(Object.assign({
+      type: "error",
+      data
+    }, errorExtra)));
+  }
+}
+function setSendError(value, extra = {}) {
+  sendError = value;
+  Object.assign(errorExtra, extra);
+  if (value != null && errorQueue.size > 0) {
+    const errors = Array.from(errorQueue);
+    errorQueue.clear();
+    sendErrorMessages(errors);
+  }
+}
+function initOnError() {
+  function onError2(error) {
+    try {
+      if (typeof PromiseRejectionEvent !== "undefined" && error instanceof PromiseRejectionEvent && error.reason instanceof Error && error.reason.message && error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
+        return;
+      }
+      if (true) {
+        originalConsole.error(error);
+      }
+      sendErrorMessages([error]);
+    } catch (err) {
+      originalConsole.error(err);
     }
   }
-  return function restoreConsole() {
-  };
-}
-function isConsoleWritable() {
-  const value = console.log;
-  const sym = Symbol();
-  try {
-    console.log = sym;
-  } catch (ex) {
-    return false;
+  if (typeof index !== "undefined") {
+    if (typeof index.onError === "function") {
+      index.onError(onError2);
+    }
+    if (typeof index.onUnhandledRejection === "function") {
+      index.onUnhandledRejection(onError2);
+    }
   }
-  const isWritable = console.log === sym;
-  console.log = value;
-  return isWritable;
+  return function offError2() {
+    if (typeof index !== "undefined") {
+      if (typeof index.offError === "function") {
+        index.offError(onError2);
+      }
+      if (typeof index.offUnhandledRejection === "function") {
+        index.offUnhandledRejection(onError2);
+      }
+    }
+  };
 }
 function formatMessage(type, args) {
   try {
@@ -6813,7 +7011,6 @@ function formatMessage(type, args) {
       args: formatArgs(args)
     };
   } catch (e2) {
-    originalConsole.error(e2);
   }
   return {
     type,
@@ -6830,7 +7027,76 @@ function formatArg(arg, depth = 0) {
       value: "[Maximum depth reached]"
     };
   }
-  return ARG_FORMATTERS[typeof arg](arg, depth);
+  const type = typeof arg;
+  switch (type) {
+    case "string":
+      return formatString(arg);
+    case "number":
+      return formatNumber(arg);
+    case "boolean":
+      return formatBoolean(arg);
+    case "object":
+      try {
+        return formatObject(arg, depth);
+      } catch (e2) {
+        return {
+          type: "object",
+          value: {
+            properties: []
+          }
+        };
+      }
+    case "undefined":
+      return formatUndefined();
+    case "function":
+      return formatFunction(arg);
+    case "symbol": {
+      return formatSymbol(arg);
+    }
+    case "bigint":
+      return formatBigInt(arg);
+  }
+}
+function formatFunction(value) {
+  return {
+    type: "function",
+    value: `function ${value.name}() {}`
+  };
+}
+function formatUndefined() {
+  return {
+    type: "undefined"
+  };
+}
+function formatBoolean(value) {
+  return {
+    type: "boolean",
+    value: String(value)
+  };
+}
+function formatNumber(value) {
+  return {
+    type: "number",
+    value: String(value)
+  };
+}
+function formatBigInt(value) {
+  return {
+    type: "bigint",
+    value: String(value)
+  };
+}
+function formatString(value) {
+  return {
+    type: "string",
+    value
+  };
+}
+function formatSymbol(value) {
+  return {
+    type: "symbol",
+    value: value.description
+  };
 }
 function formatObject(value, depth) {
   if (value === null) {
@@ -6838,17 +7104,19 @@ function formatObject(value, depth) {
       type: "null"
     };
   }
-  if (isComponentPublicInstance(value)) {
-    return formatComponentPublicInstance(value, depth);
-  }
-  if (isComponentInternalInstance(value)) {
-    return formatComponentInternalInstance(value, depth);
-  }
-  if (isUniElement(value)) {
-    return formatUniElement(value, depth);
-  }
-  if (isCSSStyleDeclaration(value)) {
-    return formatCSSStyleDeclaration(value, depth);
+  {
+    if (isComponentPublicInstance(value)) {
+      return formatComponentPublicInstance(value, depth);
+    }
+    if (isComponentInternalInstance(value)) {
+      return formatComponentInternalInstance(value, depth);
+    }
+    if (isUniElement(value)) {
+      return formatUniElement(value, depth);
+    }
+    if (isCSSStyleDeclaration(value)) {
+      return formatCSSStyleDeclaration(value, depth);
+    }
   }
   if (Array.isArray(value)) {
     return {
@@ -6914,12 +7182,29 @@ function formatObject(value, depth) {
       className: value.name || "Error"
     };
   }
+  let className = void 0;
+  {
+    const constructor = value.constructor;
+    if (constructor) {
+      if (constructor.get$UTSMetadata$) {
+        className = constructor.get$UTSMetadata$().name;
+      }
+    }
+  }
+  let entries = Object.entries(value);
+  if (isHarmonyBuilderParams(value)) {
+    entries = entries.filter(([key]) => key !== "modifier" && key !== "nodeContent");
+  }
   return {
     type: "object",
+    className,
     value: {
-      properties: Object.entries(value).map(([name, value2]) => formatObjectProperty(name, value2, depth + 1))
+      properties: entries.map((entry) => formatObjectProperty(entry[0], entry[1], depth + 1))
     }
   };
+}
+function isHarmonyBuilderParams(value) {
+  return value.modifier && value.modifier._attribute && value.nodeContent;
 }
 function isComponentPublicInstance(value) {
   return value.$ && isComponentInternalInstance(value.$);
@@ -6978,14 +7263,14 @@ function formatCSSStyleDeclaration(style, depth) {
   };
 }
 function formatObjectProperty(name, value, depth) {
-  return Object.assign(formatArg(value, depth), {
-    name
-  });
+  const result = formatArg(value, depth);
+  result.name = name;
+  return result;
 }
 function formatArrayElement(value, index2, depth) {
-  return Object.assign(formatArg(value, depth), {
-    name: `${index2}`
-  });
+  const result = formatArg(value, depth);
+  result.name = `${index2}`;
+  return result;
 }
 function formatSetEntry(value, depth) {
   return {
@@ -6998,167 +7283,104 @@ function formatMapEntry(value, depth) {
     value: formatArg(value[1], depth)
   };
 }
-const ARG_FORMATTERS = {
-  function(value) {
-    return {
-      type: "function",
-      value: `function ${value.name}() {}`
-    };
-  },
-  undefined() {
-    return {
-      type: "undefined"
-    };
-  },
-  object(value, depth) {
-    return formatObject(value, depth);
-  },
-  boolean(value) {
-    return {
-      type: "boolean",
-      value: String(value)
-    };
-  },
-  number(value) {
-    return {
-      type: "number",
-      value: String(value)
-    };
-  },
-  bigint(value) {
-    return {
-      type: "bigint",
-      value: String(value)
-    };
-  },
-  string(value) {
-    return {
-      type: "string",
-      value
-    };
-  },
-  symbol(value) {
-    return {
-      type: "symbol",
-      value: value.description
-    };
-  }
-};
-function initRuntimeSocket(hosts, port, id) {
-  if (!hosts || !port || !id)
-    return Promise.resolve(null);
-  return hosts.split(",").reduce((promise, host2) => {
-    return promise.then((socket) => {
-      if (socket)
-        return socket;
-      return tryConnectSocket(host2, port, id);
-    });
-  }, Promise.resolve(null));
-}
-const SOCKET_TIMEOUT = 500;
-function tryConnectSocket(host2, port, id) {
-  return new Promise((resolve2, reject) => {
-    const socket = index.connectSocket({
-      url: `ws://${host2}:${port}/${id}`,
-      // 支付宝小程序 是否开启多实例
-      multiple: true,
-      fail() {
-        resolve2(null);
-      }
-    });
-    const timer = setTimeout(() => {
-      socket.close({
-        code: 1006,
-        reason: "connect timeout"
-      });
-      resolve2(null);
-    }, SOCKET_TIMEOUT);
-    socket.onOpen((e2) => {
-      clearTimeout(timer);
-      resolve2(socket);
-    });
-    socket.onClose((e2) => {
-      clearTimeout(timer);
-      resolve2(null);
-    });
-    socket.onError((e2) => {
-      clearTimeout(timer);
-      resolve2(null);
-    });
-  });
-}
-let sendError = null;
-const errorQueue = /* @__PURE__ */ new Set();
-function sendErrorMessages(errors) {
-  if (sendError == null) {
-    errors.forEach((error) => {
-      errorQueue.add(error);
-    });
+let sendConsole = null;
+const messageQueue = [];
+const messageExtra = {};
+const EXCEPTION_BEGIN_MARK = "---BEGIN:EXCEPTION---";
+const EXCEPTION_END_MARK = "---END:EXCEPTION---";
+function sendConsoleMessages(messages) {
+  if (sendConsole == null) {
+    messageQueue.push(...messages);
     return;
   }
-  sendError(JSON.stringify({
-    type: "error",
-    data: errors.map((err) => {
-      const isPromiseRejection = err && "promise" in err && "reason" in err;
-      const prefix = isPromiseRejection ? "UnhandledPromiseRejection: " : "";
-      if (isPromiseRejection) {
-        err = err.reason;
+  sendConsole(JSON.stringify(Object.assign({
+    type: "console",
+    data: messages
+  }, messageExtra)));
+}
+function setSendConsole(value, extra = {}) {
+  sendConsole = value;
+  Object.assign(messageExtra, extra);
+  if (value != null && messageQueue.length > 0) {
+    const messages = messageQueue.slice();
+    messageQueue.length = 0;
+    sendConsoleMessages(messages);
+  }
+}
+const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
+function rewriteConsole() {
+  function wrapConsole(type) {
+    return function(...args) {
+      {
+        const originalArgs = [...args];
+        if (originalArgs.length) {
+          const maybeAtFile = originalArgs[originalArgs.length - 1];
+          if (typeof maybeAtFile === "string" && atFileRegex.test(maybeAtFile)) {
+            originalArgs.pop();
+          }
+        }
+        originalConsole[type](...originalArgs);
       }
-      if (err instanceof Error && err.stack) {
-        return prefix + err.stack;
-      }
-      if (typeof err === "object" && err !== null) {
-        try {
-          return prefix + JSON.stringify(err);
-        } catch (err2) {
-          return prefix + String(err2);
+      if (type === "error" && args.length === 1) {
+        const arg = args[0];
+        if (typeof arg === "string" && arg.startsWith(EXCEPTION_BEGIN_MARK)) {
+          const startIndex = EXCEPTION_BEGIN_MARK.length;
+          const endIndex = arg.length - EXCEPTION_END_MARK.length;
+          sendErrorMessages([arg.slice(startIndex, endIndex)]);
+          return;
+        } else if (arg instanceof Error) {
+          sendErrorMessages([arg]);
+          return;
         }
       }
-      return prefix + String(err);
-    })
-  }));
-}
-function setSendError(value) {
-  sendError = value;
-  if (value != null && errorQueue.size > 0) {
-    const errors = Array.from(errorQueue);
-    errorQueue.clear();
-    sendErrorMessages(errors);
+      sendConsoleMessages([formatMessage(type, args)]);
+    };
   }
-}
-function initOnError() {
-  function onError2(error) {
-    try {
-      if (typeof PromiseRejectionEvent !== "undefined" && error instanceof PromiseRejectionEvent && error.reason instanceof Error && error.reason.message && error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
-        return;
+  if (isConsoleWritable()) {
+    CONSOLE_TYPES.forEach((type) => {
+      console[type] = wrapConsole(type);
+    });
+    return function restoreConsole() {
+      CONSOLE_TYPES.forEach((type) => {
+        console[type] = originalConsole[type];
+      });
+    };
+  } else {
+    {
+      if (typeof index !== "undefined" && index.__f__) {
+        const oldLog = index.__f__;
+        if (oldLog) {
+          index.__f__ = function(...args) {
+            const [type, filename, ...rest] = args;
+            oldLog(type, "", ...rest);
+            sendConsoleMessages([formatMessage(type, [...rest, filename])]);
+          };
+          return function restoreConsole() {
+            index.__f__ = oldLog;
+          };
+        }
       }
-      if (true) {
-        originalConsole.error(error);
-      }
-      sendErrorMessages([error]);
-    } catch (err) {
-      originalConsole.error(err);
     }
   }
-  if (typeof index.onError === "function") {
-    index.onError(onError2);
-  }
-  if (typeof index.onUnhandledRejection === "function") {
-    index.onUnhandledRejection(onError2);
-  }
-  return function offError2() {
-    if (typeof index.offError === "function") {
-      index.offError(onError2);
-    }
-    if (typeof index.offUnhandledRejection === "function") {
-      index.offUnhandledRejection(onError2);
-    }
+  return function restoreConsole() {
   };
 }
+function isConsoleWritable() {
+  const value = console.log;
+  const sym = Symbol();
+  try {
+    console.log = sym;
+  } catch (ex) {
+    return false;
+  }
+  const isWritable = console.log === sym;
+  console.log = value;
+  return isWritable;
+}
 function initRuntimeSocketService() {
-  const hosts = "192.168.8.1,192.168.80.1,10.21.198.50,127.0.0.1";
+  const hosts = "192.168.188.1,192.168.228.1,10.21.239.107,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_IJ4211";
+  const id = "mp-weixin_kMhDQF";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -7174,13 +7396,19 @@ function initRuntimeSocketService() {
         restoreError();
         restoreConsole();
         originalConsole.error(wrapError("开发模式下日志通道建立 socket 连接失败。"));
-        originalConsole.error(wrapError("如果是小程序平台，请勾选不校验合法域名配置。"));
+        {
+          originalConsole.error(wrapError("小程序平台，请勾选不校验合法域名配置。"));
+        }
         originalConsole.error(wrapError("如果是运行到真机，请确认手机与电脑处于同一网络。"));
         return false;
       }
-      initMiniProgramGlobalFlag();
+      {
+        initMiniProgramGlobalFlag();
+      }
       socket.onClose(() => {
-        originalConsole.error(wrapError("开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。"));
+        {
+          originalConsole.error(wrapError("开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。"));
+        }
         restoreError();
         restoreConsole();
       });
@@ -7319,6 +7547,16 @@ function findVmByVueId(instance, vuePid) {
       return parentVm;
     }
   }
+}
+function getLocaleLanguage() {
+  var _a;
+  let localeLanguage = "";
+  {
+    const appBaseInfo = ((_a = wx.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
+    const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
+    localeLanguage = normalizeLocale(language) || LOCALE_EN;
+  }
+  return localeLanguage;
 }
 const MP_METHODS = [
   "createSelectorQuery",
@@ -7586,9 +7824,7 @@ function initAppLifecycle(appOptions, vm) {
   }
 }
 function initLocale(appVm) {
-  const locale = ref(
-    normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
-  );
+  const locale = ref(getLocaleLanguage());
   Object.defineProperty(appVm, "$locale", {
     get() {
       return locale.value;
@@ -8090,12 +8326,24 @@ const createSubpackageApp = initCreateSubpackageApp();
   wx.createPluginApp = global.createPluginApp = createPluginApp;
   wx.createSubpackageApp = global.createSubpackageApp = createSubpackageApp;
 }
-const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
+const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
-const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
-const onReachBottom = /* @__PURE__ */ createHook(ON_REACH_BOTTOM);
-const onPullDownRefresh = /* @__PURE__ */ createHook(ON_PULL_DOWN_REFRESH);
+const onLoad = /* @__PURE__ */ createLifeCycleHook(
+  ON_LOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onReachBottom = /* @__PURE__ */ createLifeCycleHook(
+  ON_REACH_BOTTOM,
+  2
+  /* HookFlags.PAGE */
+);
+const onPullDownRefresh = /* @__PURE__ */ createLifeCycleHook(
+  ON_PULL_DOWN_REFRESH,
+  2
+  /* HookFlags.PAGE */
+);
 exports._export_sfc = _export_sfc;
 exports.createSSRApp = createSSRApp;
 exports.e = e;
