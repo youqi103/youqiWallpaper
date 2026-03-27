@@ -114,12 +114,13 @@ const _sfc_main = {
           pageNum.value++;
         }
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/search/search.vue:234", "搜索失败", e);
+        common_vendor.index.__f__("error", "at pages/search/search.vue:233", "搜索失败", e);
       } finally {
         isLoading.value = false;
       }
     };
     const goPreview = (id) => {
+      common_vendor.index.setStorageSync("storageClassList", searchResults.value);
       common_vendor.index.navigateTo({
         url: "/pages/preview/preview?id=" + id
       });
@@ -132,10 +133,13 @@ const _sfc_main = {
         doSearch();
       }
     });
+    common_vendor.onUnload(() => {
+      common_vendor.index.removeStorageSync("storageClassList");
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
-        a: common_vendor.o(handleSearch, "b8"),
-        b: common_vendor.o(resetSearch, "a5"),
+        a: common_vendor.o(handleSearch, "91"),
+        b: common_vendor.o(resetSearch, "1b"),
         c: common_vendor.p({
           radius: "5",
           placeholder: "请搜索你想要的内容",
@@ -144,7 +148,7 @@ const _sfc_main = {
         }),
         d: !hasSearched.value
       }, !hasSearched.value ? common_vendor.e({
-        e: common_vendor.o(clearHistory, "5e"),
+        e: common_vendor.o(clearHistory, "49"),
         f: common_vendor.p({
           type: "trash",
           size: "20"

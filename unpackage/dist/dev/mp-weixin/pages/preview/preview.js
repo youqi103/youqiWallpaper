@@ -26,9 +26,30 @@ const _sfc_main = {
     const currentIndex = common_vendor.ref(0);
     common_vendor.onLoad((e) => {
       currentId.value = e.id;
-      currentIndex.value = classList.value.findIndex(
+      if (classList.value.length === 0) {
+        common_vendor.index.showToast({
+          title: "图片数据加载失败，请重试",
+          icon: "none"
+        });
+        setTimeout(() => {
+          common_vendor.index.navigateBack();
+        }, 1500);
+        return;
+      }
+      const foundIndex = classList.value.findIndex(
         (item) => item._id == currentId.value
       );
+      if (foundIndex === -1) {
+        common_vendor.index.showToast({
+          title: "未找到该图片",
+          icon: "none"
+        });
+        setTimeout(() => {
+          common_vendor.index.navigateBack();
+        }, 1500);
+        return;
+      }
+      currentIndex.value = foundIndex;
     });
     const swiperChange = (e) => {
       currentIndex.value = e.detail.current;

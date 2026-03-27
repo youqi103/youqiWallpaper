@@ -8334,6 +8334,11 @@ const onLoad = /* @__PURE__ */ createLifeCycleHook(
   2
   /* HookFlags.PAGE */
 );
+const onUnload = /* @__PURE__ */ createLifeCycleHook(
+  ON_UNLOAD,
+  2
+  /* HookFlags.PAGE */
+);
 const onReachBottom = /* @__PURE__ */ createLifeCycleHook(
   ON_REACH_BOTTOM,
   2
@@ -8356,6 +8361,7 @@ exports.onLoad = onLoad;
 exports.onMounted = onMounted;
 exports.onPullDownRefresh = onPullDownRefresh;
 exports.onReachBottom = onReachBottom;
+exports.onUnload = onUnload;
 exports.p = p;
 exports.ref = ref;
 exports.resolveComponent = resolveComponent;

@@ -124,9 +124,32 @@ const storageClassList = uni.getStorageSync("storageClassList") || [];
 const currentIndex = ref(0);
 onLoad((e) => {
   currentId.value = e.id;
-  currentIndex.value = classList.value.findIndex(
+  // 如果数据为空，提示用户并返回
+  if (classList.value.length === 0) {
+    uni.showToast({
+      title: "图片数据加载失败，请重试",
+      icon: "none",
+    });
+    setTimeout(() => {
+      uni.navigateBack();
+    }, 1500);
+    return;
+  }
+  const foundIndex = classList.value.findIndex(
     (item) => item._id == currentId.value,
   );
+  // 如果找不到对应图片，提示用户
+  if (foundIndex === -1) {
+    uni.showToast({
+      title: "未找到该图片",
+      icon: "none",
+    });
+    setTimeout(() => {
+      uni.navigateBack();
+    }, 1500);
+    return;
+  }
+  currentIndex.value = foundIndex;
 });
 // 改变图片序号
 const swiperChange = (e) => {

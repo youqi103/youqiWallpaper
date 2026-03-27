@@ -1,6 +1,5 @@
 <template>
   <view class="searchLayout">
-	
     <!-- 搜索内容区域 -->
     <view class="content">
       <!-- 搜索框 -->
@@ -85,9 +84,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { onReachBottom } from "@dcloudio/uni-app";
-import { apiSearchWall } from "@/api/apis.js";
+import { ref, onMounted, onUnmounted } from "vue";
+import { onReachBottom,onUnload } from "@dcloudio/uni-app";
+import { apiGetClassList, apiSearchWall } from "@/api/apis.js";
 // 搜索关键词
 const keyword = ref("");
 // 搜索历史
@@ -239,6 +238,8 @@ const doSearch = async () => {
 
 // 跳转到预览页
 const goPreview = (id) => {
+  // 存储搜索结果到 storageClassList，供预览页读取
+  uni.setStorageSync("storageClassList", searchResults.value);
   uni.navigateTo({
     url: "/pages/preview/preview?id=" + id,
   });
@@ -255,6 +256,9 @@ onReachBottom(() => {
     doSearch();
   }
 });
+onUnload(()=>{
+	uni.removeStorageSync("storageClassList");
+});
 </script>
 
 <style lang="scss" scoped>
@@ -263,7 +267,6 @@ onReachBottom(() => {
   padding: 20rpx;
 
   .content {
-
     // 搜索框容器
     .search-bar-container {
       margin-bottom: 30rpx;
@@ -271,7 +274,7 @@ onReachBottom(() => {
 
     .section {
       margin-bottom: 40rpx;
-      padding:0 20rpx;
+      padding: 0 20rpx;
       .sectionHeader {
         display: flex;
         justify-content: space-between;
