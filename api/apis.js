@@ -32,3 +32,11 @@ export function apiSearchWall(data = {}) {
     data,
   });
 }
+
+// 提交壁纸评分
+export function apiSetupScore(data = {}) {
+  return request({
+    url: "/setupScore",
+    data,
+  });
+}

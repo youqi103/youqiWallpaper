@@ -30,10 +30,17 @@ function apiSearchWall(data = {}) {
     data
   });
 }
+function apiSetupScore(data = {}) {
+  return utils_request.request({
+    url: "/setupScore",
+    data
+  });
+}
 exports.apiGetBanner = apiGetBanner;
 exports.apiGetClassList = apiGetClassList;
 exports.apiGetClassify = apiGetClassify;
 exports.apiGetNotice = apiGetNotice;
 exports.apiGetRedomPage = apiGetRedomPage;
 exports.apiSearchWall = apiSearchWall;
+exports.apiSetupScore = apiSetupScore;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/api/apis.js.map

@@ -33,7 +33,7 @@
         </view>
         <view class="box" @click="openScorePopup">
           <uni-icons type="star" size="23"></uni-icons>
-          <view class="text"> 5分 </view>
+          <view class="text"> {{ currentInfo?.score || 0 }}分 </view>
         </view>
         <view class="box">
           <uni-icons type="download" size="23"></uni-icons>
@@ -54,33 +54,43 @@
           <view class="content">
             <view class="row">
               <view class="label">壁纸ID : </view>
-              <text selectable class="value"> 123123abd</text>
+              <text selectable class="value"> {{ currentInfo?._id }}</text>
             </view>
             <view class="row">
               <view class="label">分类 : </view>
-              <text selectable class="value class"> 明星美女</text>
+              <text selectable class="value class">
+                {{ currentInfo?.classname || "未分类" }}</text
+              >
             </view>
             <view class="row">
               <view class="label">发布者 : </view>
-              <text selectable class="value"> 忧戚</text>
+              <text selectable class="value"> {{ currentInfo?.nickname }}</text>
             </view>
             <view class="row">
               <view class="label">评分 : </view>
               <view class="rate-box">
-                <uni-rate value="5" @change="onChange" />
-                <text selectable class="score">5分</text>
+                <uni-rate :value="currentInfo?.score" @change="onChange" />
+                <text selectable class="score"
+                  >{{ currentInfo?.score || 0 }}分</text
+                >
               </view>
             </view>
             <view class="row">
               <view class="label">摘要 : </view>
               <text selectable class="value">
-                摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字</text
+                {{ currentInfo?.description }}</text
               >
             </view>
             <view class="row">
               <view class="label">标签 : </view>
               <view class="tabs value">
-                <text selectable class="tab" v-for="item in 3">标签名</text>
+                <text
+                  selectable
+                  class="tab"
+                  v-for="item in currentInfo?.tabs"
+                  :key="item"
+                  >{{ item }}</text
+                >
               </view>
             </view>
             <view class="copyright">
@@ -105,7 +115,14 @@
           <text class="text">{{ userScore }}</text>
         </view>
         <view class="footer">
-          <button size="mini" plain :disabled="!userScore">确认评分</button>
+          <button
+            size="mini"
+            plain
+            :disabled="!userScore || isSubmitting"
+            @click="submitScore"
+          >
+            {{ isSubmitting ? "提交中..." : "确认评分" }}
+          </button>
         </view>
       </view>
     </uni-popup>
@@ -113,11 +130,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { getStatusBarHeight } from "@/utils/system.js";
 import { onLoad } from "@dcloudio/uni-app";
+import { apiSetupScore } from "@/api/apis.js";
 const maskState = ref(true);
 const userScore = ref(0);
+const isSubmitting = ref(false);
 const classList = ref([]);
 const currentId = ref(null);
 const storageClassList = uni.getStorageSync("storageClassList") || [];
@@ -178,14 +197,71 @@ const closeInfoPopup = () => {
 // 评分弹窗
 const scorePopup = ref(null);
 const openScorePopup = () => {
+  // 设置默认评分为当前图片的评分
+  userScore.value = currentInfo.value?.score || 0;
   scorePopup.value.open();
 };
 const closeScorePopup = () => {
   scorePopup.value.close();
 };
+
+// 提交评分
+const submitScore = async () => {
+  // 验证评分
+  if (!userScore.value || userScore.value <= 0) {
+    uni.showToast({
+      title: "请选择评分",
+      icon: "none",
+    });
+    return;
+  }
+
+  // 防止重复提交
+  if (isSubmitting.value) return;
+  isSubmitting.value = true;
+
+  // 显示加载提示
+  uni.showLoading({
+    title: "提交中...",
+    mask: true,
+  });
+
+  try {
+    const res = await apiSetupScore({
+      classid: currentInfo.value?.classid,
+      wallId: currentInfo.value?._id,
+      userScore: String(userScore.value),
+    });
+
+    uni.hideLoading();
+
+    // 提交成功
+    uni.showToast({
+      title: "评分成功",
+      icon: "success",
+    });
+
+    // 更新本地评分显示
+    if (currentInfo.value) {
+      currentInfo.value.score = userScore.value;
+    }
+
+    // 关闭弹窗
+    closeScorePopup();
+  } catch (error) {
+    uni.hideLoading();
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 const goBack = () => {
   uni.navigateBack();
 };
+
+// 获取当前显示的壁纸信息
+const currentInfo = computed(() => {
+  return classList.value[currentIndex.value];
+});
 </script>
 
 <style lang="scss" scoped>
