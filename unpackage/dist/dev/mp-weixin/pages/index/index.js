@@ -31,6 +31,7 @@ const _sfc_main = {
     const getRedomPage = async () => {
       let res = await api_apis.apiGetRedomPage();
       redomPage.value = res.data;
+      common_vendor.index.setStorageSync("storageClassList", res.data);
     };
     const getNotice = async () => {
       let res = await api_apis.apiGetNotice({ select: true });
@@ -40,9 +41,9 @@ const _sfc_main = {
       let res = await api_apis.apiGetClassify({ select: true });
       classify.value = res.data;
     };
-    const goPreview = () => {
+    const goPreview = (_id) => {
       common_vendor.index.navigateTo({
-        url: "/pages/preview/preview"
+        url: "/pages/preview/preview?id=" + _id
       });
     };
     getBanner();
@@ -85,7 +86,7 @@ const _sfc_main = {
         h: common_vendor.f(redomPage.value, (item, k0, i0) => {
           return {
             a: item.smallPicurl,
-            b: common_vendor.o(goPreview, item._id),
+            b: common_vendor.o(($event) => goPreview(item._id), item._id),
             c: item._id
           };
         }),

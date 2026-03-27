@@ -26,7 +26,9 @@ const _sfc_main = {
     const currentIndex = common_vendor.ref(0);
     common_vendor.onLoad((e) => {
       currentId.value = e.id;
-      currentIndex.value = classList.value.findIndex((item) => item._id == currentId.value);
+      currentIndex.value = classList.value.findIndex(
+        (item) => item._id == currentId.value
+      );
     });
     const swiperChange = (e) => {
       currentIndex.value = e.detail.current;
@@ -67,7 +69,7 @@ const _sfc_main = {
           };
         }),
         b: currentIndex.value,
-        c: common_vendor.o(swiperChange, "d5"),
+        c: common_vendor.o(swiperChange, "f6"),
         d: maskState.value
       }, maskState.value ? {
         e: common_vendor.p({
@@ -76,7 +78,7 @@ const _sfc_main = {
           color: "#fff"
         }),
         f: common_vendor.unref(utils_system.getStatusBarHeight)() + "px",
-        g: common_vendor.o(goBack, "86"),
+        g: common_vendor.o(goBack, "73"),
         h: common_vendor.t(currentIndex.value + 1),
         i: common_vendor.t(classList.value.length),
         j: common_vendor.p({
@@ -91,12 +93,12 @@ const _sfc_main = {
           type: "info-filled",
           size: "23"
         }),
-        m: common_vendor.o(openInfoPopup, "2f"),
+        m: common_vendor.o(openInfoPopup, "30"),
         n: common_vendor.p({
           type: "star",
           size: "23"
         }),
-        o: common_vendor.o(openScorePopup, "13"),
+        o: common_vendor.o(openScorePopup, "14"),
         p: common_vendor.p({
           type: "download",
           size: "23"
@@ -106,8 +108,8 @@ const _sfc_main = {
           type: "closeempty",
           size: "30"
         }),
-        r: common_vendor.o(closeInfoPopup, "3c"),
-        s: common_vendor.o(_ctx.onChange, "2b"),
+        r: common_vendor.o(closeInfoPopup, "b9"),
+        s: common_vendor.o(_ctx.onChange, "aa"),
         t: common_vendor.p({
           value: "5"
         }),
@@ -124,8 +126,8 @@ const _sfc_main = {
           type: "closeempty",
           size: "30"
         }),
-        z: common_vendor.o(closeScorePopup, "c1"),
-        A: common_vendor.o(($event) => userScore.value = $event, "51"),
+        z: common_vendor.o(closeScorePopup, "cd"),
+        A: common_vendor.o(($event) => userScore.value = $event, "b1"),
         B: common_vendor.p({
           allowHalf: true,
           modelValue: userScore.value

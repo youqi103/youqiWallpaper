@@ -49,7 +49,7 @@
 			</common-title>
 			<view class="content">
 				<scroll-view scroll-x>
-                    <view class="box" v-for="item in redomPage" @click="goPreview" :key="item._id">
+                    <view class="box" v-for="item in redomPage" @click="goPreview(item._id)" :key="item._id">
 						<image :src="item.smallPicurl" mode="aspectFill"></image>
 					</view>
 				</scroll-view>
@@ -87,7 +87,8 @@ const getBanner = async ()=>{
 }
 const getRedomPage = async ()=>{
 	let res = await apiGetRedomPage();
-		redomPage.value =res.data;
+	redomPage.value = res.data;
+		  uni.setStorageSync('storageClassList', res.data);
 	}
 	
 const getNotice = async ()=>{
@@ -101,9 +102,9 @@ const getClassify =async ()=>{
 		
 }
 
-const goPreview = () =>{
+const goPreview = (_id) => {
 	uni.navigateTo({
-		url:'/pages/preview/preview',
+		url:'/pages/preview/preview?id='+_id,
 	})
 }
 getBanner();
