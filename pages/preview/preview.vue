@@ -35,7 +35,7 @@
           <uni-icons type="star" size="23"></uni-icons>
           <view class="text"> {{ currentInfo?.score || 0 }}分 </view>
         </view>
-        <view class="box">
+        <view class="box" @click="downloadImage">
           <uni-icons type="download" size="23"></uni-icons>
           <view class="text"> 下载 </view>
         </view>
@@ -203,6 +203,67 @@ const openScorePopup = () => {
 };
 const closeScorePopup = () => {
   scorePopup.value.close();
+};
+
+// 下载图片
+const downloadImage = async () => {
+  // 检查是否有当前图片信息
+  if (!currentInfo.value) {
+    uni.showToast({
+      title: "图片信息不存在",
+      icon: "none",
+    });
+    return;
+  }
+
+  // 显示加载提示
+  uni.showLoading({
+    title: "下载中...",
+    mask: true,
+  });
+
+  try {
+    // 1. 下载图片到本地临时路径
+    const downloadRes = await uni.downloadFile({
+      url: currentInfo.value.picurl,
+    });
+
+    if (downloadRes.statusCode !== 200) {
+      throw new Error("下载失败");
+    }
+
+    // 2. 保存图片到相册
+    await uni.saveImageToPhotosAlbum({
+      filePath: downloadRes.tempFilePath,
+    });
+
+    uni.hideLoading();
+    uni.showToast({
+      title: "保存成功",
+      icon: "success",
+    });
+  } catch (error) {
+    uni.hideLoading();
+
+    // 判断是否是权限问题
+    if (error.errMsg && error.errMsg.includes("auth deny")) {
+      uni.showModal({
+        title: "提示",
+        content: "需要您授权保存图片到相册",
+        confirmText: "去授权",
+        success: (res) => {
+          if (res.confirm) {
+            uni.openSetting();
+          }
+        },
+      });
+    } else {
+      uni.showToast({
+        title: "下载失败，请重试",
+        icon: "none",
+      });
+    }
+  }
 };
 
 // 提交评分
