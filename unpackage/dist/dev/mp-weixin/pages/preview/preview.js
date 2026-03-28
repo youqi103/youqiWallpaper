@@ -26,8 +26,25 @@ const _sfc_main = {
     const currentId = common_vendor.ref(null);
     const storageClassList = common_vendor.index.getStorageSync("storageClassList") || [];
     const currentIndex = common_vendor.ref(0);
+    common_vendor.ref(null);
+    const isReady = common_vendor.ref(false);
+    classList.value = storageClassList.map((item) => {
+      return {
+        ...item,
+        picurl: item.smallPicurl.replace("_small.webp", ".jpg")
+      };
+    });
     common_vendor.onLoad((e) => {
       currentId.value = e.id;
+      const foundIndex = classList.value.findIndex((item) => item._id == e.id);
+      if (foundIndex !== -1) {
+        currentIndex.value = foundIndex;
+      }
+      setTimeout(() => {
+        isReady.value = true;
+      }, 50);
+    });
+    common_vendor.onMounted(() => {
       if (classList.value.length === 0) {
         common_vendor.index.showToast({
           title: "图片数据加载失败，请重试",
@@ -36,32 +53,11 @@ const _sfc_main = {
         setTimeout(() => {
           common_vendor.index.navigateBack();
         }, 1500);
-        return;
       }
-      const foundIndex = classList.value.findIndex(
-        (item) => item._id == currentId.value
-      );
-      if (foundIndex === -1) {
-        common_vendor.index.showToast({
-          title: "未找到该图片",
-          icon: "none"
-        });
-        setTimeout(() => {
-          common_vendor.index.navigateBack();
-        }, 1500);
-        return;
-      }
-      currentIndex.value = foundIndex;
     });
     const swiperChange = (e) => {
       currentIndex.value = e.detail.current;
     };
-    classList.value = storageClassList.map((item) => {
-      return {
-        ...item,
-        picurl: item.smallPicurl.replace("_small.webp", ".jpg")
-      };
-    });
     const changeMaskState = () => {
       maskState.value = !maskState.value;
     };
@@ -175,95 +171,98 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       var _a, _b, _c, _d, _e, _f, _g, _h;
       return common_vendor.e({
-        a: common_vendor.f(classList.value, (item, k0, i0) => {
+        a: isReady.value
+      }, isReady.value ? {
+        b: common_vendor.f(classList.value, (item, k0, i0) => {
           return {
             a: item.picurl,
             b: common_vendor.o(changeMaskState, item._id),
             c: item._id
           };
         }),
-        b: currentIndex.value,
-        c: common_vendor.o(swiperChange, "f6"),
-        d: maskState.value
+        c: currentIndex.value,
+        d: common_vendor.o(swiperChange, "c3")
+      } : {}, {
+        e: maskState.value
       }, maskState.value ? {
-        e: common_vendor.p({
+        f: common_vendor.p({
           type: "back",
           size: "20",
           color: "#fff"
         }),
-        f: common_vendor.unref(utils_system.getStatusBarHeight)() + "px",
-        g: common_vendor.o(goBack, "73"),
-        h: common_vendor.t(currentIndex.value + 1),
-        i: common_vendor.t(classList.value.length),
-        j: common_vendor.p({
+        g: common_vendor.unref(utils_system.getStatusBarHeight)() + "px",
+        h: common_vendor.o(goBack, "ca"),
+        i: common_vendor.t(currentIndex.value + 1),
+        j: common_vendor.t(classList.value.length),
+        k: common_vendor.p({
           date: /* @__PURE__ */ new Date(),
           format: "hh:mm"
         }),
-        k: common_vendor.p({
+        l: common_vendor.p({
           date: /* @__PURE__ */ new Date(),
           format: "MM月dd日"
         }),
-        l: common_vendor.p({
+        m: common_vendor.p({
           type: "info-filled",
           size: "23"
         }),
-        m: common_vendor.o(openInfoPopup, "30"),
-        n: common_vendor.p({
+        n: common_vendor.o(openInfoPopup, "85"),
+        o: common_vendor.p({
           type: "star",
           size: "23"
         }),
-        o: common_vendor.t(((_a = currentInfo.value) == null ? void 0 : _a.score) || 0),
-        p: common_vendor.o(openScorePopup, "14"),
-        q: common_vendor.p({
+        p: common_vendor.t(((_a = currentInfo.value) == null ? void 0 : _a.score) || 0),
+        q: common_vendor.o(openScorePopup, "a7"),
+        r: common_vendor.p({
           type: "download",
           size: "23"
         }),
-        r: common_vendor.o(downloadImage, "9b")
+        s: common_vendor.o(downloadImage, "12")
       } : {}, {
-        s: common_vendor.p({
+        t: common_vendor.p({
           type: "closeempty",
           size: "30"
         }),
-        t: common_vendor.o(closeInfoPopup, "38"),
-        v: common_vendor.t((_b = currentInfo.value) == null ? void 0 : _b._id),
-        w: common_vendor.t(((_c = currentInfo.value) == null ? void 0 : _c.classname) || "未分类"),
-        x: common_vendor.t((_d = currentInfo.value) == null ? void 0 : _d.nickname),
-        y: common_vendor.o(_ctx.onChange, "80"),
-        z: common_vendor.p({
+        v: common_vendor.o(closeInfoPopup, "e9"),
+        w: common_vendor.t((_b = currentInfo.value) == null ? void 0 : _b._id),
+        x: common_vendor.t(((_c = currentInfo.value) == null ? void 0 : _c.classname) || "未分类"),
+        y: common_vendor.t((_d = currentInfo.value) == null ? void 0 : _d.nickname),
+        z: common_vendor.o(_ctx.onChange, "b6"),
+        A: common_vendor.p({
           value: (_e = currentInfo.value) == null ? void 0 : _e.score
         }),
-        A: common_vendor.t(((_f = currentInfo.value) == null ? void 0 : _f.score) || 0),
-        B: common_vendor.t((_g = currentInfo.value) == null ? void 0 : _g.description),
-        C: common_vendor.f((_h = currentInfo.value) == null ? void 0 : _h.tabs, (item, k0, i0) => {
+        B: common_vendor.t(((_f = currentInfo.value) == null ? void 0 : _f.score) || 0),
+        C: common_vendor.t((_g = currentInfo.value) == null ? void 0 : _g.description),
+        D: common_vendor.f((_h = currentInfo.value) == null ? void 0 : _h.tabs, (item, k0, i0) => {
           return {
             a: common_vendor.t(item),
             b: item
           };
         }),
-        D: common_vendor.sr(infopopup, "2dad6c07-6", {
+        E: common_vendor.sr(infopopup, "2dad6c07-6", {
           "k": "infopopup"
         }),
-        E: common_vendor.p({
+        F: common_vendor.p({
           type: "bottom"
         }),
-        F: common_vendor.p({
+        G: common_vendor.p({
           type: "closeempty",
           size: "30"
         }),
-        G: common_vendor.o(closeScorePopup, "fd"),
-        H: common_vendor.o(($event) => userScore.value = $event, "3c"),
-        I: common_vendor.p({
+        H: common_vendor.o(closeScorePopup, "fb"),
+        I: common_vendor.o(($event) => userScore.value = $event, "94"),
+        J: common_vendor.p({
           allowHalf: true,
           modelValue: userScore.value
         }),
-        J: common_vendor.t(userScore.value),
-        K: common_vendor.t(isSubmitting.value ? "提交中..." : "确认评分"),
-        L: !userScore.value || isSubmitting.value,
-        M: common_vendor.o(submitScore, "3d"),
-        N: common_vendor.sr(scorePopup, "2dad6c07-9", {
+        K: common_vendor.t(userScore.value),
+        L: common_vendor.t(isSubmitting.value ? "提交中..." : "确认评分"),
+        M: !userScore.value || isSubmitting.value,
+        N: common_vendor.o(submitScore, "6c"),
+        O: common_vendor.sr(scorePopup, "2dad6c07-9", {
           "k": "scorePopup"
         }),
-        O: common_vendor.p({
+        P: common_vendor.p({
           ["is-mask-click"]: false
         })
       });

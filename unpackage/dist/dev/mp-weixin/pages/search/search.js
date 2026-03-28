@@ -114,7 +114,7 @@ const _sfc_main = {
           pageNum.value++;
         }
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/search/search.vue:233", "搜索失败", e);
+        common_vendor.index.__f__("error", "at pages/search/search.vue:234", "搜索失败", e);
       } finally {
         isLoading.value = false;
       }
@@ -138,24 +138,26 @@ const _sfc_main = {
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
-        a: common_vendor.o(handleSearch, "91"),
-        b: common_vendor.o(resetSearch, "1b"),
-        c: common_vendor.p({
+        a: common_vendor.o(handleSearch, "57"),
+        b: common_vendor.o(resetSearch, "ee"),
+        c: common_vendor.o(($event) => keyword.value = $event, "3c"),
+        d: common_vendor.p({
           radius: "5",
           placeholder: "请搜索你想要的内容",
           clearButton: "always",
-          cancelButton: "always"
+          cancelButton: "always",
+          modelValue: keyword.value
         }),
-        d: !hasSearched.value
+        e: !hasSearched.value
       }, !hasSearched.value ? common_vendor.e({
-        e: common_vendor.o(clearHistory, "49"),
-        f: common_vendor.p({
+        f: common_vendor.o(clearHistory, "af"),
+        g: common_vendor.p({
           type: "trash",
           size: "20"
         }),
-        g: historyList.value.length > 0
+        h: historyList.value.length > 0
       }, historyList.value.length > 0 ? {
-        h: common_vendor.f(historyList.value, (item, index, i0) => {
+        i: common_vendor.f(historyList.value, (item, index, i0) => {
           return {
             a: common_vendor.t(item),
             b: index,
@@ -163,9 +165,9 @@ const _sfc_main = {
           };
         })
       } : {}) : {}, {
-        i: !hasSearched.value
+        j: !hasSearched.value
       }, !hasSearched.value ? {
-        j: common_vendor.f(hotList.value, (item, index, i0) => {
+        k: common_vendor.f(hotList.value, (item, index, i0) => {
           return {
             a: common_vendor.t(item),
             b: index,
@@ -173,18 +175,18 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        k: !searchResults.value.length
+        l: !searchResults.value.length
       }, !searchResults.value.length ? {
-        l: common_vendor.p({
+        m: common_vendor.p({
           mode: "search",
           icon: "https://cdn.uviewui.com/uview/empty/search.png"
         })
       } : {}, {
-        m: hasSearched.value
+        n: hasSearched.value
       }, hasSearched.value ? common_vendor.e({
-        n: searchResults.value.length > 0
+        o: searchResults.value.length > 0
       }, searchResults.value.length > 0 ? {
-        o: common_vendor.f(searchResults.value, (item, k0, i0) => {
+        p: common_vendor.f(searchResults.value, (item, k0, i0) => {
           return {
             a: item.smallPicurl,
             b: item._id,
@@ -192,11 +194,11 @@ const _sfc_main = {
           };
         })
       } : {}) : {}, {
-        p: hasSearched.value && searchResults.value.length > 0
+        q: hasSearched.value && searchResults.value.length > 0
       }, hasSearched.value && searchResults.value.length > 0 ? common_vendor.e({
-        q: isLoading.value
+        r: isLoading.value
       }, isLoading.value ? {} : noMore.value ? {} : {}, {
-        r: noMore.value
+        s: noMore.value
       }) : {});
     };
   }

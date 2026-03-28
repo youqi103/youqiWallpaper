@@ -14,6 +14,9 @@
   min-height: 100vh;
   padding: 20rpx;
 }
+.searchLayout .content.data-v-c10c040c {
+  margin-top: 20rpx;
+}
 .searchLayout .content .search-bar-container.data-v-c10c040c {
   margin-bottom: 30rpx;
 }

@@ -1,6 +1,12 @@
 <template>
   <view class="preview">
-    <swiper circular :current="currentIndex" @change="swiperChange">
+    <swiper
+      ref="swiperRef"
+      circular
+      :current="currentIndex"
+      @change="swiperChange"
+      v-if="isReady"
+    >
       <swiper-item v-for="item in classList" :key="item._id">
         <image
           :src="item.picurl"
@@ -130,7 +136,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { getStatusBarHeight } from "@/utils/system.js";
 import { onLoad } from "@dcloudio/uni-app";
 import { apiSetupScore } from "@/api/apis.js";
@@ -141,9 +147,30 @@ const classList = ref([]);
 const currentId = ref(null);
 const storageClassList = uni.getStorageSync("storageClassList") || [];
 const currentIndex = ref(0);
+const swiperRef = ref(null);
+const isReady = ref(false);
+
+// 获取图片列表
+classList.value = storageClassList.map((item) => {
+  return {
+    ...item,
+    picurl: item.smallPicurl.replace("_small.webp", ".jpg"),
+  };
+});
+
 onLoad((e) => {
   currentId.value = e.id;
-  // 如果数据为空，提示用户并返回
+  const foundIndex = classList.value.findIndex((item) => item._id == e.id);
+  if (foundIndex !== -1) {
+    currentIndex.value = foundIndex;
+  }
+  // 延迟显示 swiper，确保索引已正确设置
+  setTimeout(() => {
+    isReady.value = true;
+  }, 50);
+});
+
+onMounted(() => {
   if (classList.value.length === 0) {
     uni.showToast({
       title: "图片数据加载失败，请重试",
@@ -152,35 +179,13 @@ onLoad((e) => {
     setTimeout(() => {
       uni.navigateBack();
     }, 1500);
-    return;
   }
-  const foundIndex = classList.value.findIndex(
-    (item) => item._id == currentId.value,
-  );
-  // 如果找不到对应图片，提示用户
-  if (foundIndex === -1) {
-    uni.showToast({
-      title: "未找到该图片",
-      icon: "none",
-    });
-    setTimeout(() => {
-      uni.navigateBack();
-    }, 1500);
-    return;
-  }
-  currentIndex.value = foundIndex;
 });
+
 // 改变图片序号
 const swiperChange = (e) => {
   currentIndex.value = e.detail.current;
 };
-// 获取图片列表
-classList.value = storageClassList.map((item) => {
-  return {
-    ...item,
-    picurl: item.smallPicurl.replace("_small.webp", ".jpg"),
-  };
-});
 //改变遮罩层状态
 const changeMaskState = () => {
   maskState.value = !maskState.value;

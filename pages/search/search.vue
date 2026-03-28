@@ -6,6 +6,7 @@
       <view class="search-bar-container">
         <uni-search-bar
           radius="5"
+          v-model="keyword"
           placeholder="请搜索你想要的内容"
           clearButton="always"
           cancelButton="always"
@@ -84,8 +85,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import { onReachBottom,onUnload } from "@dcloudio/uni-app";
+import { ref, onMounted } from "vue";
+import { onReachBottom, onUnload } from "@dcloudio/uni-app";
 import { apiGetClassList, apiSearchWall } from "@/api/apis.js";
 // 搜索关键词
 const keyword = ref("");
@@ -256,8 +257,8 @@ onReachBottom(() => {
     doSearch();
   }
 });
-onUnload(()=>{
-	uni.removeStorageSync("storageClassList");
+onUnload(() => {
+  uni.removeStorageSync("storageClassList");
 });
 </script>
 
@@ -267,6 +268,7 @@ onUnload(()=>{
   padding: 20rpx;
 
   .content {
+    margin-top: 20rpx;
     // 搜索框容器
     .search-bar-container {
       margin-bottom: 30rpx;
