@@ -48,6 +48,9 @@ const _sfc_main = {
       }
       common_vendor.index.__f__("log", "at pages/classList/classList.vue:58", res.data);
     };
+    common_vendor.onUnload(() => {
+      common_vendor.index.removeStorageSync("storageClassList");
+    });
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: isEmpty.value && !classlist.value.length

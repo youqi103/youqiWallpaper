@@ -40,3 +40,27 @@ export function apiSetupScore(data = {}) {
     data,
   });
 }
+
+// 记录壁纸下载
+export function apiDownloadWall(data = {}) {
+  return request({
+    url: "/downloadWall",
+    data,
+  });
+}
+
+// 获取用户下载列表
+export function apiGetUserDownloadList(data = {}) {
+  return request({
+    url: "/userWallList",
+    data: { ...data, type: "download" },
+  });
+}
+
+// 获取用户评分列表
+export function apiGetUserScoreList(data = {}) {
+  return request({
+    url: "/userWallList",
+    data: { ...data, type: "score" },
+  });
+}

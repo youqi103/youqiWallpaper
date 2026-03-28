@@ -18,7 +18,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import {onLoad,onReachBottom,onPullDownRefresh} from '@dcloudio/uni-app';
+import {onLoad,onReachBottom,onPullDownRefresh,onUnload} from '@dcloudio/uni-app';
 import {apiGetClassList}from '@/api/apis.js'
 const classlist=ref([]);
 const isEmpty=ref(false);
@@ -57,6 +57,9 @@ const getClassList =async ()=>{
 		if(res.data.length<queryParams.pageSize){isEmpty.value=true;}
 		console.log(res.data);
 }
+onUnload(() => {
+  uni.removeStorageSync("storageClassList");
+});
 </script>
 
 <style lang="scss" scoped>

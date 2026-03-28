@@ -45,6 +45,9 @@ const _sfc_main = {
     }
   },
   computed: {
+    showTag() {
+      return !!this.text.toString();
+    },
     classes() {
       const {
         type,
@@ -82,12 +85,12 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: $props.text
-  }, $props.text ? {
+    a: $options.showTag
+  }, $options.showTag ? {
     b: common_vendor.t($props.text),
     c: common_vendor.n($options.classes),
     d: common_vendor.s($props.customStyle),
-    e: common_vendor.o((...args) => $options.onClick && $options.onClick(...args), "f0")
+    e: common_vendor.o((...args) => $options.onClick && $options.onClick(...args), "e9")
   } : {});
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1f94d070"]]);

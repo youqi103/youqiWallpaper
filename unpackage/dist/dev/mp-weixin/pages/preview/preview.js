@@ -24,21 +24,30 @@ const _sfc_main = {
     const isSubmitting = common_vendor.ref(false);
     const classList = common_vendor.ref([]);
     const currentId = common_vendor.ref(null);
-    const storageClassList = common_vendor.index.getStorageSync("storageClassList") || [];
     const currentIndex = common_vendor.ref(0);
     common_vendor.ref(null);
     const isReady = common_vendor.ref(false);
-    classList.value = storageClassList.map((item) => {
-      return {
-        ...item,
-        picurl: item.smallPicurl.replace("_small.webp", ".jpg")
-      };
-    });
     common_vendor.onLoad((e) => {
+      const storageClassList = common_vendor.index.getStorageSync("storageClassList") || [];
+      classList.value = storageClassList.map((item) => {
+        return {
+          ...item,
+          picurl: item.smallPicurl.replace("_small.webp", ".jpg")
+        };
+      });
       currentId.value = e.id;
       const foundIndex = classList.value.findIndex((item) => item._id == e.id);
       if (foundIndex !== -1) {
         currentIndex.value = foundIndex;
+      } else {
+        common_vendor.index.showToast({
+          title: "图片不存在或数据已过期",
+          icon: "none"
+        });
+        setTimeout(() => {
+          common_vendor.index.navigateBack();
+        }, 1500);
+        return;
       }
       setTimeout(() => {
         isReady.value = true;
@@ -78,6 +87,7 @@ const _sfc_main = {
       scorePopup.value.close();
     };
     const downloadImage = async () => {
+      var _a, _b;
       if (!currentInfo.value) {
         common_vendor.index.showToast({
           title: "图片信息不存在",
@@ -99,6 +109,16 @@ const _sfc_main = {
         await common_vendor.index.saveImageToPhotosAlbum({
           filePath: downloadRes.tempFilePath
         });
+        try {
+          await api_apis.apiDownloadWall({
+            classid: (_a = currentInfo.value) == null ? void 0 : _a.classid,
+            wallId: (_b = currentInfo.value) == null ? void 0 : _b._id
+          });
+          const cachedCount = common_vendor.index.getStorageSync("userDownloadCount") || 0;
+          common_vendor.index.setStorageSync("userDownloadCount", cachedCount + 1);
+        } catch (e) {
+          common_vendor.index.__f__("log", "at pages/preview/preview.vue:269", "记录下载失败", e);
+        }
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
           title: "保存成功",
@@ -155,6 +175,8 @@ const _sfc_main = {
         if (currentInfo.value) {
           currentInfo.value.score = userScore.value;
         }
+        const cachedCount = common_vendor.index.getStorageSync("userScoreCount") || 0;
+        common_vendor.index.setStorageSync("userScoreCount", cachedCount + 1);
         closeScorePopup();
       } catch (error) {
         common_vendor.index.hideLoading();
@@ -181,7 +203,7 @@ const _sfc_main = {
           };
         }),
         c: currentIndex.value,
-        d: common_vendor.o(swiperChange, "c3")
+        d: common_vendor.o(swiperChange, "37")
       } : {}, {
         e: maskState.value
       }, maskState.value ? {
@@ -191,7 +213,7 @@ const _sfc_main = {
           color: "#fff"
         }),
         g: common_vendor.unref(utils_system.getStatusBarHeight)() + "px",
-        h: common_vendor.o(goBack, "ca"),
+        h: common_vendor.o(goBack, "aa"),
         i: common_vendor.t(currentIndex.value + 1),
         j: common_vendor.t(classList.value.length),
         k: common_vendor.p({
@@ -206,28 +228,28 @@ const _sfc_main = {
           type: "info-filled",
           size: "23"
         }),
-        n: common_vendor.o(openInfoPopup, "85"),
+        n: common_vendor.o(openInfoPopup, "9a"),
         o: common_vendor.p({
           type: "star",
           size: "23"
         }),
         p: common_vendor.t(((_a = currentInfo.value) == null ? void 0 : _a.score) || 0),
-        q: common_vendor.o(openScorePopup, "a7"),
+        q: common_vendor.o(openScorePopup, "e0"),
         r: common_vendor.p({
           type: "download",
           size: "23"
         }),
-        s: common_vendor.o(downloadImage, "12")
+        s: common_vendor.o(downloadImage, "68")
       } : {}, {
         t: common_vendor.p({
           type: "closeempty",
           size: "30"
         }),
-        v: common_vendor.o(closeInfoPopup, "e9"),
+        v: common_vendor.o(closeInfoPopup, "90"),
         w: common_vendor.t((_b = currentInfo.value) == null ? void 0 : _b._id),
         x: common_vendor.t(((_c = currentInfo.value) == null ? void 0 : _c.classname) || "未分类"),
         y: common_vendor.t((_d = currentInfo.value) == null ? void 0 : _d.nickname),
-        z: common_vendor.o(_ctx.onChange, "b6"),
+        z: common_vendor.o(_ctx.onChange, "f2"),
         A: common_vendor.p({
           value: (_e = currentInfo.value) == null ? void 0 : _e.score
         }),
@@ -249,8 +271,8 @@ const _sfc_main = {
           type: "closeempty",
           size: "30"
         }),
-        H: common_vendor.o(closeScorePopup, "fb"),
-        I: common_vendor.o(($event) => userScore.value = $event, "94"),
+        H: common_vendor.o(closeScorePopup, "a7"),
+        I: common_vendor.o(($event) => userScore.value = $event, "12"),
         J: common_vendor.p({
           allowHalf: true,
           modelValue: userScore.value
@@ -258,7 +280,7 @@ const _sfc_main = {
         K: common_vendor.t(userScore.value),
         L: common_vendor.t(isSubmitting.value ? "提交中..." : "确认评分"),
         M: !userScore.value || isSubmitting.value,
-        N: common_vendor.o(submitScore, "6c"),
+        N: common_vendor.o(submitScore, "15"),
         O: common_vendor.sr(scorePopup, "2dad6c07-9", {
           "k": "scorePopup"
         }),

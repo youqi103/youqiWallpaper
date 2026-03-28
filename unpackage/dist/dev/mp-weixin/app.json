@@ -7,7 +7,9 @@
     "pages/preview/preview",
     "pages/notice/notice",
     "pages/notice/detial/detial",
-    "pages/search/search"
+    "pages/search/search",
+    "pages/userDownload/userDownload",
+    "pages/userScore/userScore"
   ],
   "window": {
     "navigationBarTextStyle": "black",

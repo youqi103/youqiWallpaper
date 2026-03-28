@@ -139,31 +139,45 @@
 import { ref, computed, onMounted } from "vue";
 import { getStatusBarHeight } from "@/utils/system.js";
 import { onLoad } from "@dcloudio/uni-app";
-import { apiSetupScore } from "@/api/apis.js";
+import { apiSetupScore, apiDownloadWall } from "@/api/apis.js";
 const maskState = ref(true);
 const userScore = ref(0);
 const isSubmitting = ref(false);
 const classList = ref([]);
 const currentId = ref(null);
-const storageClassList = uni.getStorageSync("storageClassList") || [];
 const currentIndex = ref(0);
 const swiperRef = ref(null);
 const isReady = ref(false);
 
-// 获取图片列表
-classList.value = storageClassList.map((item) => {
-  return {
-    ...item,
-    picurl: item.smallPicurl.replace("_small.webp", ".jpg"),
-  };
-});
-
 onLoad((e) => {
+  // 每次进入页面时重新读取存储，确保获取最新的图片列表
+  const storageClassList = uni.getStorageSync("storageClassList") || [];
+  
+  // 转换图片URL格式
+  classList.value = storageClassList.map((item) => {
+    return {
+      ...item,
+      picurl: item.smallPicurl.replace("_small.webp", ".jpg"),
+    };
+  });
+  
   currentId.value = e.id;
   const foundIndex = classList.value.findIndex((item) => item._id == e.id);
+  
   if (foundIndex !== -1) {
     currentIndex.value = foundIndex;
+  } else {
+    // 找不到对应图片时，显示错误提示并返回
+    uni.showToast({
+      title: "图片不存在或数据已过期",
+      icon: "none",
+    });
+    setTimeout(() => {
+      uni.navigateBack();
+    }, 1500);
+    return;
   }
+  
   // 延迟显示 swiper，确保索引已正确设置
   setTimeout(() => {
     isReady.value = true;
@@ -242,6 +256,19 @@ const downloadImage = async () => {
       filePath: downloadRes.tempFilePath,
     });
 
+    // 3. 记录下载到服务器
+    try {
+      await apiDownloadWall({
+        classid: currentInfo.value?.classid,
+        wallId: currentInfo.value?._id,
+      });
+      // 更新本地缓存的下载计数
+      const cachedCount = uni.getStorageSync("userDownloadCount") || 0;
+      uni.setStorageSync("userDownloadCount", cachedCount + 1);
+    } catch (e) {
+      console.log("记录下载失败", e);
+    }
+
     uni.hideLoading();
     uni.showToast({
       title: "保存成功",
@@ -311,6 +338,10 @@ const submitScore = async () => {
     if (currentInfo.value) {
       currentInfo.value.score = userScore.value;
     }
+
+    // 更新本地缓存的评分计数
+    const cachedCount = uni.getStorageSync("userScoreCount") || 0;
+    uni.setStorageSync("userScoreCount", cachedCount + 1);
 
     // 关闭弹窗
     closeScorePopup();

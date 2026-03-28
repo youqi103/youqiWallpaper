@@ -36,11 +36,32 @@ function apiSetupScore(data = {}) {
     data
   });
 }
+function apiDownloadWall(data = {}) {
+  return utils_request.request({
+    url: "/downloadWall",
+    data
+  });
+}
+function apiGetUserDownloadList(data = {}) {
+  return utils_request.request({
+    url: "/userWallList",
+    data: { ...data, type: "download" }
+  });
+}
+function apiGetUserScoreList(data = {}) {
+  return utils_request.request({
+    url: "/userWallList",
+    data: { ...data, type: "score" }
+  });
+}
+exports.apiDownloadWall = apiDownloadWall;
 exports.apiGetBanner = apiGetBanner;
 exports.apiGetClassList = apiGetClassList;
 exports.apiGetClassify = apiGetClassify;
 exports.apiGetNotice = apiGetNotice;
 exports.apiGetRedomPage = apiGetRedomPage;
+exports.apiGetUserDownloadList = apiGetUserDownloadList;
+exports.apiGetUserScoreList = apiGetUserScoreList;
 exports.apiSearchWall = apiSearchWall;
 exports.apiSetupScore = apiSetupScore;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/api/apis.js.map

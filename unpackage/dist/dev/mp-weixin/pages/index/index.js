@@ -42,6 +42,7 @@ const _sfc_main = {
       classify.value = res.data;
     };
     const goPreview = (_id) => {
+      common_vendor.index.setStorageSync("storageClassList", redomPage.value);
       common_vendor.index.navigateTo({
         url: "/pages/preview/preview?id=" + _id
       });
