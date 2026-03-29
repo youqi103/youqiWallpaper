@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const api_apis = require("../../api/apis.js");
+const utils_storage = require("../../utils/storage.js");
 if (!Array) {
   const _easycom_uni_search_bar2 = common_vendor.resolveComponent("uni-search-bar");
   const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
@@ -31,7 +32,7 @@ const _sfc_main = {
         historyList.value = JSON.parse(history);
       }
     };
-    const saveHistory = (kw) => {
+    const saveHistory = async (kw) => {
       let list = [...historyList.value];
       const index = list.indexOf(kw);
       if (index > -1) {
@@ -42,7 +43,7 @@ const _sfc_main = {
         list = list.slice(0, 10);
       }
       historyList.value = list;
-      common_vendor.index.setStorageSync("searchHistory", JSON.stringify(list));
+      await utils_storage.storage.set("searchHistory", JSON.stringify(list));
     };
     const clearHistory = () => {
       common_vendor.index.showModal({
@@ -114,13 +115,13 @@ const _sfc_main = {
           pageNum.value++;
         }
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/search/search.vue:234", "搜索失败", e);
+        common_vendor.index.__f__("error", "at pages/search/search.vue:235", "搜索失败", e);
       } finally {
         isLoading.value = false;
       }
     };
-    const goPreview = (id) => {
-      common_vendor.index.setStorageSync("storageClassList", searchResults.value);
+    const goPreview = async (id) => {
+      await utils_storage.storage.set("storageClassList", searchResults.value);
       common_vendor.index.navigateTo({
         url: "/pages/preview/preview?id=" + id
       });

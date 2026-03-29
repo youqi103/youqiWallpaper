@@ -75,7 +75,7 @@
             <view class="row">
               <view class="label">评分 : </view>
               <view class="rate-box value">
-                <uni-rate :value="currentInfo?.score" @change="onChange"  />
+                <uni-rate :value="currentInfo?.score" @change="onChange" />
                 <text selectable class="score"
                   >{{ currentInfo?.score || 0 }}分</text
                 >
@@ -89,8 +89,7 @@
             </view>
             <view class="row">
               <view class="label">标签 : </view>
-              <view>
-              </view>
+              <view> </view>
               <view class="tabs value">
                 <text
                   selectable
@@ -140,6 +139,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { getStatusBarHeight } from "@/utils/system.js";
+import storage from "@/utils/storage.js";
 import { onLoad } from "@dcloudio/uni-app";
 import { apiSetupScore, apiDownloadWall } from "@/api/apis.js";
 const maskState = ref(true);
@@ -148,30 +148,29 @@ const isSubmitting = ref(false);
 const classList = ref([]);
 const currentId = ref(null);
 const currentIndex = ref(0);
-const swiperRef = ref(null);
 const isReady = ref(false);
 
-onLoad((e) => {
+onLoad(async (e) => {
   // 每次进入页面时重新读取存储，确保获取最新的图片列表
-  const storageClassList = uni.getStorageSync("storageClassList") || [];
-  
+  const storageClassList = (await storage.get("storageClassList")) || [];
+
   // 转换图片URL格式
   classList.value = storageClassList.map((item) => {
     let processedItem = {
       ...item,
       picurl: item.smallPicurl.replace("_small.webp", ".jpg"),
-    }
+    };
     if (item.tabs && item.tabs.length > 0) {
       processedItem.classname = item.tabs[0] || "未分类";
       processedItem.tabs = item.tabs.slice(1);
     }
-    
+
     return processedItem;
   });
-  
+
   currentId.value = e.id;
   const foundIndex = classList.value.findIndex((item) => item._id == e.id);
-  
+
   if (foundIndex !== -1) {
     currentIndex.value = foundIndex;
   } else {
@@ -185,7 +184,7 @@ onLoad((e) => {
     }, 1500);
     return;
   }
-  
+
   // 延迟显示 swiper，确保索引已正确设置
   setTimeout(() => {
     isReady.value = true;
@@ -272,7 +271,7 @@ const downloadImage = async () => {
       });
       // 更新本地缓存的下载计数
       const cachedCount = uni.getStorageSync("userDownloadCount") || 0;
-      uni.setStorageSync("userDownloadCount", cachedCount + 1);
+      await storage.set("userDownloadCount", cachedCount + 1);
     } catch (e) {
       console.log("记录下载失败", e);
     }
@@ -349,7 +348,7 @@ const submitScore = async () => {
 
     // 更新本地缓存的评分计数
     const cachedCount = uni.getStorageSync("userScoreCount") || 0;
-    uni.setStorageSync("userScoreCount", cachedCount + 1);
+    await storage.set("userScoreCount", cachedCount + 1);
 
     // 关闭弹窗
     closeScorePopup();

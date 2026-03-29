@@ -85,22 +85,23 @@ import {
   // apiGetNotice,
   apiGetClassify,
 } from "@/api/apis.js";
+import storage from "@/utils/storage.js";
 
 const bannerList = ref([]);
 const redomPage = ref([]);
 const notice = ref([
   {
-    _id: '1',
-    title: '欢迎使用忧戚的壁纸，海量高清壁纸等你发现'
+    _id: "1",
+    title: "欢迎使用忧戚的壁纸，海量高清壁纸等你发现",
   },
   {
-    _id: '2',
-    title: '每日推荐壁纸更新，为你的设备带来新鲜体验'
+    _id: "2",
+    title: "每日推荐壁纸更新，为你的设备带来新鲜体验",
   },
   {
-    _id: '3',
-    title: '专题精选栏目上线，分类浏览更方便'
-  }
+    _id: "3",
+    title: "专题精选栏目上线，分类浏览更方便",
+  },
 ]);
 const classify = ref([]);
 
@@ -111,11 +112,11 @@ const getBanner = async () => {
 const getRedomPage = async () => {
   let res = await apiGetRedomPage();
   redomPage.value = res.data;
-  uni.setStorageSync("storageClassList", res.data);
+  await storage.set("storageClassList", res.data);
 };
 
 // const getNotice = async () => {
-//   let res = await apiGetNotice({ select: true });  
+//   let res = await apiGetNotice({ select: true });
 //   notice.value = res.data;
 // };
 
@@ -124,9 +125,9 @@ const getClassify = async () => {
   classify.value = res.data;
 };
 
-const goPreview = (_id) => {
+const goPreview =  (_id) => {
   // 跳转前确保存储的是每日推荐数据
-  uni.setStorageSync("storageClassList", redomPage.value);
+    storage.setSync("storageClassList", redomPage.value);
   uni.navigateTo({
     url: "/pages/preview/preview?id=" + _id,
   });

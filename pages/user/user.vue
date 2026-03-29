@@ -155,10 +155,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { onShow } from "@dcloudio/uni-app";
 import { apiGetUserDownloadList, apiGetUserScoreList } from "@/api/apis.js";
-import { getNavBarHeight } from "@/utils/system.js";
+import storage from "@/utils/storage.js";
 const downloadCount = ref(0);
 const scoreCount = ref(0);
 
@@ -203,8 +203,8 @@ const getUserStats = async () => {
     scoreCount.value = scoreRes.data.length;
 
     // 缓存到本地存储
-    uni.setStorageSync("userDownloadCount", downloadCount.value);
-    uni.setStorageSync("userScoreCount", scoreCount.value);
+    await storage.set("userDownloadCount", downloadCount.value);
+    await storage.set("userScoreCount", scoreCount.value);
   } catch (e) {
     console.log("获取用户统计数据失败", e);
   }

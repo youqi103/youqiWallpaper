@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const utils_system = require("../../utils/system.js");
+const utils_storage = require("../../utils/storage.js");
 const api_apis = require("../../api/apis.js");
 if (!Array) {
   const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
@@ -25,10 +26,9 @@ const _sfc_main = {
     const classList = common_vendor.ref([]);
     const currentId = common_vendor.ref(null);
     const currentIndex = common_vendor.ref(0);
-    common_vendor.ref(null);
     const isReady = common_vendor.ref(false);
-    common_vendor.onLoad((e) => {
-      const storageClassList = common_vendor.index.getStorageSync("storageClassList") || [];
+    common_vendor.onLoad(async (e) => {
+      const storageClassList = await utils_storage.storage.get("storageClassList") || [];
       classList.value = storageClassList.map((item) => {
         let processedItem = {
           ...item,
@@ -120,9 +120,9 @@ const _sfc_main = {
             wallId: (_b = currentInfo.value) == null ? void 0 : _b._id
           });
           const cachedCount = common_vendor.index.getStorageSync("userDownloadCount") || 0;
-          common_vendor.index.setStorageSync("userDownloadCount", cachedCount + 1);
+          await utils_storage.storage.set("userDownloadCount", cachedCount + 1);
         } catch (e) {
-          common_vendor.index.__f__("log", "at pages/preview/preview.vue:277", "记录下载失败", e);
+          common_vendor.index.__f__("log", "at pages/preview/preview.vue:276", "记录下载失败", e);
         }
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
@@ -181,7 +181,7 @@ const _sfc_main = {
           currentInfo.value.score = userScore.value;
         }
         const cachedCount = common_vendor.index.getStorageSync("userScoreCount") || 0;
-        common_vendor.index.setStorageSync("userScoreCount", cachedCount + 1);
+        await utils_storage.storage.set("userScoreCount", cachedCount + 1);
         closeScorePopup();
       } catch (error) {
         common_vendor.index.hideLoading();
@@ -276,8 +276,8 @@ const _sfc_main = {
           type: "closeempty",
           size: "30"
         }),
-        H: common_vendor.o(closeScorePopup, "9c"),
-        I: common_vendor.o(($event) => userScore.value = $event, "28"),
+        H: common_vendor.o(closeScorePopup, "fe"),
+        I: common_vendor.o(($event) => userScore.value = $event, "af"),
         J: common_vendor.p({
           allowHalf: true,
           modelValue: userScore.value
@@ -285,7 +285,7 @@ const _sfc_main = {
         K: common_vendor.t(userScore.value),
         L: common_vendor.t(isSubmitting.value ? "提交中..." : "确认评分"),
         M: !userScore.value || isSubmitting.value,
-        N: common_vendor.o(submitScore, "46"),
+        N: common_vendor.o(submitScore, "00"),
         O: common_vendor.sr(scorePopup, "2dad6c07-9", {
           "k": "scorePopup"
         }),

@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const utils_storage = require("../../utils/storage.js");
 const api_apis = require("../../api/apis.js");
 if (!Array) {
   const _easycom_uni_load_more2 = common_vendor.resolveComponent("uni-load-more");
@@ -55,14 +56,14 @@ const _sfc_main = {
         isLoading.value = false;
       }
     };
-    const goPreview = (id) => {
-      common_vendor.index.setStorageSync("storageClassList", dataList.value);
+    const goPreview = async (id) => {
+      await utils_storage.storage.set("storageClassList", dataList.value);
       common_vendor.index.navigateTo({
         url: "/pages/preview/preview?id=" + id
       });
     };
-    common_vendor.onUnload(() => {
-      common_vendor.index.removeStorageSync("storageClassList");
+    common_vendor.onUnload(async () => {
+      await utils_storage.storage.remove("storageClassList");
     });
     return (_ctx, _cache) => {
       return common_vendor.e({

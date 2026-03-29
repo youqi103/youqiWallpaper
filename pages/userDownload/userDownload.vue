@@ -25,6 +25,7 @@
 
 <script setup>
 import { ref } from "vue";
+import storage from "@/utils/storage.js";
 import {
   onLoad,
   onReachBottom,
@@ -79,17 +80,17 @@ const getDataList = async () => {
 };
 
 // 跳转到预览页
-const goPreview = (id) => {
+const goPreview = async (id) => {
   // 存储当前列表到 storageClassList，供预览页读取
-  uni.setStorageSync("storageClassList", dataList.value);
+  await storage.set("storageClassList", dataList.value);
   uni.navigateTo({
     url: "/pages/preview/preview?id=" + id,
   });
 };
 
 // 页面卸载时清除存储
-onUnload(() => {
-  uni.removeStorageSync("storageClassList");
+onUnload(async () => {
+  await storage.remove("storageClassList");
 });
 </script>
 

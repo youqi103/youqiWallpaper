@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const api_apis = require("../../api/apis.js");
+const utils_storage = require("../../utils/storage.js");
 if (!Array) {
   const _easycom_custom_nav_bar2 = common_vendor.resolveComponent("custom-nav-bar");
   const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
@@ -44,14 +45,14 @@ const _sfc_main = {
     const getRedomPage = async () => {
       let res = await api_apis.apiGetRedomPage();
       redomPage.value = res.data;
-      common_vendor.index.setStorageSync("storageClassList", res.data);
+      await utils_storage.storage.set("storageClassList", res.data);
     };
     const getClassify = async () => {
       let res = await api_apis.apiGetClassify({ select: true });
       classify.value = res.data;
     };
     const goPreview = (_id) => {
-      common_vendor.index.setStorageSync("storageClassList", redomPage.value);
+      utils_storage.storage.setSync("storageClassList", redomPage.value);
       common_vendor.index.navigateTo({
         url: "/pages/preview/preview?id=" + _id
       });

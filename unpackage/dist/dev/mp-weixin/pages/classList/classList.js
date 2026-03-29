@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const api_apis = require("../../api/apis.js");
+const utils_storage = require("../../utils/storage.js");
 if (!Array) {
   const _easycom_uni_load_more2 = common_vendor.resolveComponent("uni-load-more");
   _easycom_uni_load_more2();
@@ -42,14 +43,13 @@ const _sfc_main = {
     const getClassList = async () => {
       let res = await api_apis.apiGetClassList(queryParams);
       classlist.value = [...classlist.value, ...res.data];
-      common_vendor.index.setStorageSync("storageClassList", classlist.value);
+      await utils_storage.storage.set("storageClassList", classlist.value);
       if (res.data.length < queryParams.pageSize) {
         isEmpty.value = true;
       }
-      common_vendor.index.__f__("log", "at pages/classList/classList.vue:58", res.data);
     };
-    common_vendor.onUnload(() => {
-      common_vendor.index.removeStorageSync("storageClassList");
+    common_vendor.onUnload(async () => {
+      await utils_storage.storage.remove("storageClassList");
     });
     return (_ctx, _cache) => {
       return common_vendor.e({

@@ -2,7 +2,7 @@
 const common_vendor = require("../../common/vendor.js");
 const common_assets = require("../../common/assets.js");
 const api_apis = require("../../api/apis.js");
-require("../../utils/system.js");
+const utils_storage = require("../../utils/storage.js");
 if (!Array) {
   const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
   const _easycom_uni_popup2 = common_vendor.resolveComponent("uni-popup");
@@ -42,8 +42,8 @@ const _sfc_main = {
         ]);
         downloadCount.value = downloadRes.data.length;
         scoreCount.value = scoreRes.data.length;
-        common_vendor.index.setStorageSync("userDownloadCount", downloadCount.value);
-        common_vendor.index.setStorageSync("userScoreCount", scoreCount.value);
+        await utils_storage.storage.set("userDownloadCount", downloadCount.value);
+        await utils_storage.storage.set("userScoreCount", scoreCount.value);
       } catch (e) {
         common_vendor.index.__f__("log", "at pages/user/user.vue:209", "获取用户统计数据失败", e);
       }
@@ -128,7 +128,7 @@ const _sfc_main = {
           size: "16",
           color: "#aaa"
         }),
-        e: common_vendor.o(goToDownload, "ad"),
+        e: common_vendor.o(goToDownload, "cb"),
         f: common_vendor.p({
           type: "star-filled",
           size: "20"
@@ -139,7 +139,7 @@ const _sfc_main = {
           size: "16",
           color: "#aaa"
         }),
-        i: common_vendor.o(goToScore, "0d"),
+        i: common_vendor.o(goToScore, "94"),
         j: common_vendor.p({
           type: "chatboxes-filled",
           size: "20"
@@ -158,7 +158,7 @@ const _sfc_main = {
           size: "16",
           color: "#aaa"
         }),
-        n: common_vendor.o(openSubscribePopup, "3f"),
+        n: common_vendor.o(openSubscribePopup, "13"),
         o: common_vendor.p({
           type: "flag-filled",
           size: "20"
@@ -168,12 +168,12 @@ const _sfc_main = {
           size: "16",
           color: "#aaa"
         }),
-        q: common_vendor.o(openFaqPopup, "e4"),
+        q: common_vendor.o(openFaqPopup, "61"),
         r: common_vendor.p({
           type: "closeempty",
           size: "26"
         }),
-        s: common_vendor.o(closeSubscribePopup, "f0"),
+        s: common_vendor.o(closeSubscribePopup, "2f"),
         t: common_vendor.f(subscribeTypes.value, (item, k0, i0) => {
           return {
             a: "0f7520f0-12-" + i0 + ",0f7520f0-10",
@@ -188,7 +188,7 @@ const _sfc_main = {
             f: item.id
           };
         }),
-        v: common_vendor.o(confirmSubscribe, "a2"),
+        v: common_vendor.o(confirmSubscribe, "b1"),
         w: common_vendor.sr(subscribePopup, "0f7520f0-10", {
           "k": "subscribePopup"
         }),
@@ -199,7 +199,7 @@ const _sfc_main = {
           type: "closeempty",
           size: "26"
         }),
-        z: common_vendor.o(closeFaqPopup, "52"),
+        z: common_vendor.o(closeFaqPopup, "46"),
         A: common_vendor.f(faqList.value, (item, index, i0) => {
           return common_vendor.e({
             a: common_vendor.t(item.question),

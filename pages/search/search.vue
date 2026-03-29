@@ -88,6 +88,7 @@
 import { ref, onMounted } from "vue";
 import { onReachBottom, onUnload } from "@dcloudio/uni-app";
 import { apiGetClassList, apiSearchWall } from "@/api/apis.js";
+import storage from "@/utils/storage.js";
 // 搜索关键词
 const keyword = ref("");
 // 搜索历史
@@ -115,7 +116,7 @@ const getHistory = () => {
 };
 
 // 保存搜索历史
-const saveHistory = (kw) => {
+const saveHistory = async (kw) => {
   let list = [...historyList.value];
   // 如果已存在，先删除
   const index = list.indexOf(kw);
@@ -129,7 +130,7 @@ const saveHistory = (kw) => {
     list = list.slice(0, 10);
   }
   historyList.value = list;
-  uni.setStorageSync("searchHistory", JSON.stringify(list));
+  await storage.set("searchHistory", JSON.stringify(list));
 };
 
 // 清空搜索历史
@@ -238,9 +239,9 @@ const doSearch = async () => {
 };
 
 // 跳转到预览页
-const goPreview = (id) => {
+const goPreview = async (id) => {
   // 存储搜索结果到 storageClassList，供预览页读取
-  uni.setStorageSync("storageClassList", searchResults.value);
+  await storage.set("storageClassList", searchResults.value);
   uni.navigateTo({
     url: "/pages/preview/preview?id=" + id,
   });
