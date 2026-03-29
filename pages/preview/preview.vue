@@ -74,8 +74,8 @@
             </view>
             <view class="row">
               <view class="label">评分 : </view>
-              <view class="rate-box">
-                <uni-rate :value="currentInfo?.score" @change="onChange" />
+              <view class="rate-box value">
+                <uni-rate :value="currentInfo?.score" @change="onChange"  />
                 <text selectable class="score"
                   >{{ currentInfo?.score || 0 }}分</text
                 >
@@ -89,6 +89,8 @@
             </view>
             <view class="row">
               <view class="label">标签 : </view>
+              <view>
+              </view>
               <view class="tabs value">
                 <text
                   selectable
@@ -155,10 +157,16 @@ onLoad((e) => {
   
   // 转换图片URL格式
   classList.value = storageClassList.map((item) => {
-    return {
+    let processedItem = {
       ...item,
       picurl: item.smallPicurl.replace("_small.webp", ".jpg"),
-    };
+    }
+    if (item.tabs && item.tabs.length > 0) {
+      processedItem.classname = item.tabs[0] || "未分类";
+      processedItem.tabs = item.tabs.slice(1);
+    }
+    
+    return processedItem;
   });
   
   currentId.value = e.id;
@@ -468,6 +476,7 @@ const currentInfo = computed(() => {
             font-size: 30rpx;
           }
           .value {
+            padding-left: 20rpx;
             flex: 1;
             width: 0;
           }

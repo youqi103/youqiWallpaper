@@ -30,10 +30,15 @@ const _sfc_main = {
     common_vendor.onLoad((e) => {
       const storageClassList = common_vendor.index.getStorageSync("storageClassList") || [];
       classList.value = storageClassList.map((item) => {
-        return {
+        let processedItem = {
           ...item,
           picurl: item.smallPicurl.replace("_small.webp", ".jpg")
         };
+        if (item.tabs && item.tabs.length > 0) {
+          processedItem.classname = item.tabs[0] || "未分类";
+          processedItem.tabs = item.tabs.slice(1);
+        }
+        return processedItem;
       });
       currentId.value = e.id;
       const foundIndex = classList.value.findIndex((item) => item._id == e.id);
@@ -117,7 +122,7 @@ const _sfc_main = {
           const cachedCount = common_vendor.index.getStorageSync("userDownloadCount") || 0;
           common_vendor.index.setStorageSync("userDownloadCount", cachedCount + 1);
         } catch (e) {
-          common_vendor.index.__f__("log", "at pages/preview/preview.vue:269", "记录下载失败", e);
+          common_vendor.index.__f__("log", "at pages/preview/preview.vue:277", "记录下载失败", e);
         }
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
@@ -203,7 +208,7 @@ const _sfc_main = {
           };
         }),
         c: currentIndex.value,
-        d: common_vendor.o(swiperChange, "37")
+        d: common_vendor.o(swiperChange, "c3")
       } : {}, {
         e: maskState.value
       }, maskState.value ? {
@@ -213,7 +218,7 @@ const _sfc_main = {
           color: "#fff"
         }),
         g: common_vendor.unref(utils_system.getStatusBarHeight)() + "px",
-        h: common_vendor.o(goBack, "aa"),
+        h: common_vendor.o(goBack, "ca"),
         i: common_vendor.t(currentIndex.value + 1),
         j: common_vendor.t(classList.value.length),
         k: common_vendor.p({
@@ -228,28 +233,28 @@ const _sfc_main = {
           type: "info-filled",
           size: "23"
         }),
-        n: common_vendor.o(openInfoPopup, "9a"),
+        n: common_vendor.o(openInfoPopup, "85"),
         o: common_vendor.p({
           type: "star",
           size: "23"
         }),
         p: common_vendor.t(((_a = currentInfo.value) == null ? void 0 : _a.score) || 0),
-        q: common_vendor.o(openScorePopup, "e0"),
+        q: common_vendor.o(openScorePopup, "a7"),
         r: common_vendor.p({
           type: "download",
           size: "23"
         }),
-        s: common_vendor.o(downloadImage, "68")
+        s: common_vendor.o(downloadImage, "12")
       } : {}, {
         t: common_vendor.p({
           type: "closeempty",
           size: "30"
         }),
-        v: common_vendor.o(closeInfoPopup, "90"),
+        v: common_vendor.o(closeInfoPopup, "e9"),
         w: common_vendor.t((_b = currentInfo.value) == null ? void 0 : _b._id),
         x: common_vendor.t(((_c = currentInfo.value) == null ? void 0 : _c.classname) || "未分类"),
         y: common_vendor.t((_d = currentInfo.value) == null ? void 0 : _d.nickname),
-        z: common_vendor.o(_ctx.onChange, "f2"),
+        z: common_vendor.o(_ctx.onChange, "93"),
         A: common_vendor.p({
           value: (_e = currentInfo.value) == null ? void 0 : _e.score
         }),
@@ -271,8 +276,8 @@ const _sfc_main = {
           type: "closeempty",
           size: "30"
         }),
-        H: common_vendor.o(closeScorePopup, "a7"),
-        I: common_vendor.o(($event) => userScore.value = $event, "12"),
+        H: common_vendor.o(closeScorePopup, "9c"),
+        I: common_vendor.o(($event) => userScore.value = $event, "28"),
         J: common_vendor.p({
           allowHalf: true,
           modelValue: userScore.value
@@ -280,7 +285,7 @@ const _sfc_main = {
         K: common_vendor.t(userScore.value),
         L: common_vendor.t(isSubmitting.value ? "提交中..." : "确认评分"),
         M: !userScore.value || isSubmitting.value,
-        N: common_vendor.o(submitScore, "15"),
+        N: common_vendor.o(submitScore, "46"),
         O: common_vendor.sr(scorePopup, "2dad6c07-9", {
           "k": "scorePopup"
         }),
