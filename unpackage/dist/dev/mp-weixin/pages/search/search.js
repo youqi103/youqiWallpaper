@@ -138,9 +138,9 @@ const _sfc_main = {
     });
     return (_ctx, _cache) => {
       return common_vendor.e({
-        a: common_vendor.o(handleSearch, "57"),
-        b: common_vendor.o(resetSearch, "ee"),
-        c: common_vendor.o(($event) => keyword.value = $event, "3c"),
+        a: common_vendor.o(handleSearch, "dd"),
+        b: common_vendor.o(resetSearch, "c6"),
+        c: common_vendor.o(($event) => keyword.value = $event, "43"),
         d: common_vendor.p({
           radius: "5",
           placeholder: "请搜索你想要的内容",
@@ -150,7 +150,7 @@ const _sfc_main = {
         }),
         e: !hasSearched.value
       }, !hasSearched.value ? common_vendor.e({
-        f: common_vendor.o(clearHistory, "af"),
+        f: common_vendor.o(clearHistory, "b6"),
         g: common_vendor.p({
           type: "trash",
           size: "20"
