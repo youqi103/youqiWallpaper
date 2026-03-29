@@ -82,13 +82,26 @@ import { ref } from "vue";
 import {
   apiGetBanner,
   apiGetRedomPage,
-  apiGetNotice,
+  // apiGetNotice,
   apiGetClassify,
 } from "@/api/apis.js";
 
 const bannerList = ref([]);
 const redomPage = ref([]);
-const notice = ref([]);
+const notice = ref([
+  {
+    _id: '1',
+    title: '欢迎使用忧戚的壁纸，海量高清壁纸等你发现'
+  },
+  {
+    _id: '2',
+    title: '每日推荐壁纸更新，为你的设备带来新鲜体验'
+  },
+  {
+    _id: '3',
+    title: '专题精选栏目上线，分类浏览更方便'
+  }
+]);
 const classify = ref([]);
 
 const getBanner = async () => {
@@ -101,10 +114,10 @@ const getRedomPage = async () => {
   uni.setStorageSync("storageClassList", res.data);
 };
 
-const getNotice = async () => {
-  let res = await apiGetNotice({ select: true });
-  notice.value = res.data;
-};
+// const getNotice = async () => {
+//   let res = await apiGetNotice({ select: true });  
+//   notice.value = res.data;
+// };
 
 const getClassify = async () => {
   let res = await apiGetClassify({ select: true });
@@ -120,7 +133,7 @@ const goPreview = (_id) => {
 };
 getBanner();
 getRedomPage();
-getNotice();
+// getNotice();
 getClassify();
 </script>
 

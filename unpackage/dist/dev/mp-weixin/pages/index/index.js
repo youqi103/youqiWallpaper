@@ -22,7 +22,20 @@ const _sfc_main = {
   setup(__props) {
     const bannerList = common_vendor.ref([]);
     const redomPage = common_vendor.ref([]);
-    const notice = common_vendor.ref([]);
+    const notice = common_vendor.ref([
+      {
+        _id: "1",
+        title: "欢迎使用忧戚的壁纸，海量高清壁纸等你发现"
+      },
+      {
+        _id: "2",
+        title: "每日推荐壁纸更新，为你的设备带来新鲜体验"
+      },
+      {
+        _id: "3",
+        title: "专题精选栏目上线，分类浏览更方便"
+      }
+    ]);
     const classify = common_vendor.ref([]);
     const getBanner = async () => {
       let res = await api_apis.apiGetBanner();
@@ -32,10 +45,6 @@ const _sfc_main = {
       let res = await api_apis.apiGetRedomPage();
       redomPage.value = res.data;
       common_vendor.index.setStorageSync("storageClassList", res.data);
-    };
-    const getNotice = async () => {
-      let res = await api_apis.apiGetNotice({ select: true });
-      notice.value = res.data;
     };
     const getClassify = async () => {
       let res = await api_apis.apiGetClassify({ select: true });
@@ -49,7 +58,6 @@ const _sfc_main = {
     };
     getBanner();
     getRedomPage();
-    getNotice();
     getClassify();
     return (_ctx, _cache) => {
       return {

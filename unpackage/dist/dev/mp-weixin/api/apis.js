@@ -6,12 +6,6 @@ function apiGetBanner() {
 function apiGetRedomPage() {
   return utils_request.request({ url: "/randomWall" });
 }
-function apiGetNotice(data = {}) {
-  return utils_request.request({
-    url: "/wallNewsList",
-    data
-  });
-}
 function apiGetClassify(data = {}) {
   return utils_request.request({
     url: "/classify",
@@ -58,7 +52,6 @@ exports.apiDownloadWall = apiDownloadWall;
 exports.apiGetBanner = apiGetBanner;
 exports.apiGetClassList = apiGetClassList;
 exports.apiGetClassify = apiGetClassify;
-exports.apiGetNotice = apiGetNotice;
 exports.apiGetRedomPage = apiGetRedomPage;
 exports.apiGetUserDownloadList = apiGetUserDownloadList;
 exports.apiGetUserScoreList = apiGetUserScoreList;
