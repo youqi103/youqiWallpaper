@@ -1,5 +1,6 @@
 <template>
   <view class="userLayout pageBg">
+    <view class="status_bar"></view>
     <view class="userInfor">
       <view class="avatar">
         <image
@@ -157,7 +158,7 @@
 import { ref, onMounted } from "vue";
 import { onShow } from "@dcloudio/uni-app";
 import { apiGetUserDownloadList, apiGetUserScoreList } from "@/api/apis.js";
-
+import { getNavBarHeight } from "@/utils/system.js";
 const downloadCount = ref(0);
 const scoreCount = ref(0);
 
@@ -268,12 +269,6 @@ const faqList = ref([
     expanded: false,
   },
   {
-    question: "如何联系客服？",
-    answer:
-      '您可以通过"联系客服"功能直接与客服沟通，或拨打客服电话：18565436106。工作时间：周一至周五 9:00-18:00。',
-    expanded: false,
-  },
-  {
     question: "壁纸可以商用吗？",
     answer:
       "本平台壁纸仅供个人学习交流使用，不可用于商业用途。如需商用请联系客服获取授权。",
@@ -303,6 +298,10 @@ const toggleFaq = (index) => {
 <style lang="scss" scoped>
 .userLayout {
   height: 90vh;
+  .status_bar {
+    height: var(--status-bar-height);
+    width: 100%;
+  }
   .userInfor {
     padding: 50rpx 0;
     display: flex;

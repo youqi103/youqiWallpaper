@@ -30,7 +30,11 @@ function request(config = {}) {
         }
       },
       fail: (err) => {
-        reject(err.data);
+        common_vendor.index.showToast({
+          title: "网络异常，请稍后再试",
+          icon: "none"
+        });
+        reject(err);
       }
     });
   });

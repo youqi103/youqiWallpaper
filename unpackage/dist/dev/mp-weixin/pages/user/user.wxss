@@ -13,6 +13,10 @@
 .userLayout.data-v-0f7520f0 {
   height: 90vh;
 }
+.userLayout .status_bar.data-v-0f7520f0 {
+  height: var(--status-bar-height);
+  width: 100%;
+}
 .userLayout .userInfor.data-v-0f7520f0 {
   padding: 50rpx 0;
   display: flex;

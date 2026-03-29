@@ -8,7 +8,7 @@ export function request(config = {}) {
     uni.request({
       url,
       data,
-      method,
+      method, 
       header,
       success: (res) => {
         if (res.data.errCode === 0) {
@@ -29,7 +29,11 @@ export function request(config = {}) {
         }
       },
       fail: (err) => {
-        reject(err.data);
+        uni.showToast({
+          title: "网络异常，请稍后再试",
+          icon: "none",
+        });
+        reject(err);
       },
     });
   });

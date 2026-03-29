@@ -2,6 +2,7 @@
 const common_vendor = require("../../common/vendor.js");
 const common_assets = require("../../common/assets.js");
 const api_apis = require("../../api/apis.js");
+require("../../utils/system.js");
 if (!Array) {
   const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
   const _easycom_uni_popup2 = common_vendor.resolveComponent("uni-popup");
@@ -44,7 +45,7 @@ const _sfc_main = {
         common_vendor.index.setStorageSync("userDownloadCount", downloadCount.value);
         common_vendor.index.setStorageSync("userScoreCount", scoreCount.value);
       } catch (e) {
-        common_vendor.index.__f__("log", "at pages/user/user.vue:208", "获取用户统计数据失败", e);
+        common_vendor.index.__f__("log", "at pages/user/user.vue:209", "获取用户统计数据失败", e);
       }
     };
     common_vendor.onShow(() => {
@@ -95,11 +96,6 @@ const _sfc_main = {
         expanded: false
       },
       {
-        question: "如何联系客服？",
-        answer: '您可以通过"联系客服"功能直接与客服沟通，或拨打客服电话：18565436106。工作时间：周一至周五 9:00-18:00。',
-        expanded: false
-      },
-      {
         question: "壁纸可以商用吗？",
         answer: "本平台壁纸仅供个人学习交流使用，不可用于商业用途。如需商用请联系客服获取授权。",
         expanded: false
@@ -132,7 +128,7 @@ const _sfc_main = {
           size: "16",
           color: "#aaa"
         }),
-        e: common_vendor.o(goToDownload, "3c"),
+        e: common_vendor.o(goToDownload, "ad"),
         f: common_vendor.p({
           type: "star-filled",
           size: "20"
@@ -143,7 +139,7 @@ const _sfc_main = {
           size: "16",
           color: "#aaa"
         }),
-        i: common_vendor.o(goToScore, "33"),
+        i: common_vendor.o(goToScore, "0d"),
         j: common_vendor.p({
           type: "chatboxes-filled",
           size: "20"
@@ -162,7 +158,7 @@ const _sfc_main = {
           size: "16",
           color: "#aaa"
         }),
-        n: common_vendor.o(openSubscribePopup, "35"),
+        n: common_vendor.o(openSubscribePopup, "3f"),
         o: common_vendor.p({
           type: "flag-filled",
           size: "20"
@@ -172,12 +168,12 @@ const _sfc_main = {
           size: "16",
           color: "#aaa"
         }),
-        q: common_vendor.o(openFaqPopup, "97"),
+        q: common_vendor.o(openFaqPopup, "e4"),
         r: common_vendor.p({
           type: "closeempty",
           size: "26"
         }),
-        s: common_vendor.o(closeSubscribePopup, "67"),
+        s: common_vendor.o(closeSubscribePopup, "f0"),
         t: common_vendor.f(subscribeTypes.value, (item, k0, i0) => {
           return {
             a: "0f7520f0-12-" + i0 + ",0f7520f0-10",
@@ -192,7 +188,7 @@ const _sfc_main = {
             f: item.id
           };
         }),
-        v: common_vendor.o(confirmSubscribe, "b6"),
+        v: common_vendor.o(confirmSubscribe, "a2"),
         w: common_vendor.sr(subscribePopup, "0f7520f0-10", {
           "k": "subscribePopup"
         }),
@@ -203,7 +199,7 @@ const _sfc_main = {
           type: "closeempty",
           size: "26"
         }),
-        z: common_vendor.o(closeFaqPopup, "b6"),
+        z: common_vendor.o(closeFaqPopup, "52"),
         A: common_vendor.f(faqList.value, (item, index, i0) => {
           return common_vendor.e({
             a: common_vendor.t(item.question),
