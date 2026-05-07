@@ -6436,13 +6436,13 @@ function populateParameters(fromRes, toRes) {
   const hostLanguage = (language || "").replace(/_/g, "-");
   const parameters = {
     appId: "__UNI__50EDD01",
-    appName: "wallpaper",
-    appVersion: "1.0.0",
-    appVersionCode: "100",
+    appName: "忧戚的壁纸",
+    appVersion: "1.0.1",
+    appVersionCode: 101,
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "5.05",
-    uniCompilerVersion: "5.05",
-    uniRuntimeVersion: "5.05",
+    uniCompileVersion: "5.07",
+    uniCompilerVersion: "5.07",
+    uniRuntimeVersion: "5.07",
     uniPlatform: "mp-weixin",
     deviceBrand,
     deviceModel: model,
@@ -6580,9 +6580,9 @@ const getAppBaseInfo = {
     let hostLanguage = (language || "").replace(/_/g, "-");
     const parameters = {
       appId: "__UNI__50EDD01",
-      appName: "wallpaper",
-      appVersion: "1.0.0",
-      appVersionCode: "100",
+      appName: "忧戚的壁纸",
+      appVersion: "1.0.1",
+      appVersionCode: 101,
       appLanguage: getAppLanguage(hostLanguage),
       hostVersion: version2,
       hostLanguage,
@@ -6591,9 +6591,9 @@ const getAppBaseInfo = {
       hostTheme: theme,
       isUniAppX: false,
       uniPlatform: "mp-weixin",
-      uniCompileVersion: "5.05",
-      uniCompilerVersion: "5.05",
-      uniRuntimeVersion: "5.05"
+      uniCompileVersion: "5.07",
+      uniCompilerVersion: "5.07",
+      uniRuntimeVersion: "5.07"
     };
     extend(toRes, parameters);
   }
@@ -7378,9 +7378,9 @@ function isConsoleWritable() {
   return isWritable;
 }
 function initRuntimeSocketService() {
-  const hosts = "192.168.188.1,192.168.228.1,10.21.58.211,127.0.0.1";
+  const hosts = "192.168.188.1,192.168.228.1,10.21.69.221,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_2a9Ruv";
+  const id = "mp-weixin_r6c0DA";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();

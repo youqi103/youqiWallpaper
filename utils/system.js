@@ -1,6 +1,8 @@
-let SYSTEM_INFO=uni.getSystemInfoSync();
+let SYSTEM_INFO = uni.getSystemInfoSync();
+//状态栏高度
 export const getStatusBarHeight= ()=>SYSTEM_INFO.statusBarHeight||40;
 
+//标题栏高度 = 胶囊高度 + (胶囊顶部 - 状态栏高度) × 2
 export const getTitleBarHeight= ()=>{
 	if(uni.getMenuButtonBoundingClientRect){
 		let {top,height}= uni.getMenuButtonBoundingClientRect();
@@ -10,5 +12,6 @@ export const getTitleBarHeight= ()=>{
 		return 44;
 	}
 }
+//导航栏高度 = 状态栏高度 + 标题栏高度
 export const getNavBarHeight= ()=> getStatusBarHeight()+getTitleBarHeight();
 

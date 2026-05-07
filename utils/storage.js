@@ -6,7 +6,7 @@ const storage = {
         key,
         data,
         success: resolve,
-        fail: reject, // 这里修复了！不能加 ()
+        fail: reject, 
       });
     });
   },

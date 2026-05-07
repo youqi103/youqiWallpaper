@@ -2,7 +2,12 @@
 const common_vendor = require("../common/vendor.js");
 const BASE_URL = "https://tea.qingnian8.com/api/bizhi";
 function request(config = {}) {
-  let { url, data = {}, method = "GET", header = {} } = config;
+  let {
+    url,
+    data = {},
+    method = "GET",
+    header = {}
+  } = config;
   url = BASE_URL + url;
   header["access-key"] = "254834";
   return new Promise((resolve, reject) => {

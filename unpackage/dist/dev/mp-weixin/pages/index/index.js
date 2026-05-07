@@ -57,9 +57,13 @@ const _sfc_main = {
         url: "/pages/preview/preview?id=" + _id
       });
     };
-    getBanner();
-    getRedomPage();
-    getClassify();
+    common_vendor.onLoad(async () => {
+      await Promise.all([
+        getBanner(),
+        getRedomPage(),
+        getClassify()
+      ]);
+    });
     return (_ctx, _cache) => {
       return {
         a: common_vendor.p({

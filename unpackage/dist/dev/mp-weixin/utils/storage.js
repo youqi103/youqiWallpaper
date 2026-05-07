@@ -9,7 +9,6 @@ const storage = {
         data,
         success: resolve,
         fail: reject
-        // 这里修复了！不能加 ()
       });
     });
   },

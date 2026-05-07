@@ -41,5 +41,5 @@
       }
     ]
   },
-  "usingComponents": {}
+  "lazyCodeLoading":"requiredComponents"
 }
